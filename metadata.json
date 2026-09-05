@@ -1,0 +1,6 @@
+{
+  "name": "AGL Creatives",
+  "description": "Custom packaging design, precision printing, and production studio for consumer brands.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
