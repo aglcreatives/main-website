@@ -38,7 +38,7 @@ const DISCIPLINES: ServiceDiscipline[] = [
     number: '02',
     tagline: 'Offset and digital printing with crisp colors and clean finishes',
     description: 'High-quality printing using modern offset and digital presses. We ensure exact CMYK and Pantone color matching, along with premium finishes like foil stamping, spot UV, and protective lamination.',
-    icon: <Printer className="w-6 h-6 text-[#2F6FED]" />,
+    icon: <Printer className="w-6 h-6 text-[#D88245]" />,
     bulletItems: [
       'Offset and digital sheetfed printing',
       'Accurate CMYK and Pantone ink matching',
@@ -86,20 +86,18 @@ export const Services: React.FC<ServicesProps> = ({ onOpenQuoteModal }) => {
   return (
     <section
       id="services"
-      className="relative w-full bg-[#0A1930] text-[#FAF7F2] py-24 sm:py-32 overflow-hidden border-y border-white/10"
+      className="relative w-full bg-[#31574f] text-[#FAF7F2] py-24 sm:py-32 overflow-hidden border-y border-white/20"
       aria-label="Services — What We Do"
     >
-      {/* 1. Deep Atmospheric Lighting Blobs */}
-      <div
-        className="absolute top-0 right-1/4 w-[500px] h-[500px] rounded-full bg-[#2F6FED]/15 blur-[160px] pointer-events-none -z-10"
+      <img
+        src="/images/hero/sustainable-retail-studio.png"
+        alt=""
         aria-hidden="true"
+        className="absolute inset-0 h-full w-full object-cover opacity-30"
       />
-      <div
-        className="absolute bottom-0 left-1/4 w-[450px] h-[450px] rounded-full bg-[#FF9933]/10 blur-[150px] pointer-events-none -z-10"
-        aria-hidden="true"
-      />
+      <div className="absolute inset-0 bg-[#254842]/70" aria-hidden="true" />
 
-      {/* Blueprint Grid Lines Overlay in Navy Section */}
+      {/* Fine grain that keeps the panel treatment tactile over the packaging image. */}
       <div
         className="absolute inset-0 opacity-[0.035] bg-[radial-gradient(#FAF7F2_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none"
         aria-hidden="true"
@@ -166,8 +164,8 @@ export const Services: React.FC<ServicesProps> = ({ onOpenQuoteModal }) => {
                   }}
                   className={`relative rounded-3xl p-7 xl:p-8 flex flex-col justify-between overflow-hidden cursor-pointer border min-w-0 select-none outline-none focus-visible:ring-2 focus-visible:ring-[#FF9933] ${
                     isHovered
-                      ? 'bg-gradient-to-b from-[#12295A]/95 via-[#0E224C]/90 to-[#0A1930] border-[#FF9933] shadow-[0_20px_50px_rgba(10,25,48,0.7),inset_0_0_24px_rgba(255,153,51,0.15)]'
-                      : 'bg-white/[0.04] border-white/10 hover:border-white/20'
+                    ? 'bg-gradient-to-b from-[#4B7668]/95 via-[#31574F]/95 to-[#23433E] border-[#FFB35C] shadow-[0_20px_50px_rgba(18,61,53,0.45),inset_0_0_24px_rgba(255,179,92,0.14)]'
+                      : 'bg-[#173B35]/65 border-white/15 hover:border-[#FFB35C]/50'
                   }`}
                 >
                   {/* Panel Top: Icon, Tagline Word & Title */}
@@ -308,8 +306,8 @@ export const Services: React.FC<ServicesProps> = ({ onOpenQuoteModal }) => {
                 id={`tablet-mobile-service-card-${discipline.taglineWord.toLowerCase()}`}
                 className={`rounded-2xl sm:rounded-3xl border transition-colors duration-300 overflow-hidden ${
                   isOpen
-                    ? 'bg-gradient-to-b from-[#12295A] to-[#0A1930] border-[#FF9933] shadow-lg'
-                    : 'bg-white/[0.05] border-white/10 hover:border-white/20'
+                    ? 'bg-gradient-to-b from-[#4B7668] to-[#23433E] border-[#FFB35C] shadow-lg'
+                    : 'bg-[#173B35]/70 border-white/15 hover:border-[#FFB35C]/50'
                 }`}
               >
                 {/* Accordion Trigger Header */}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { readApiResult } from '../lib/api';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   ArrowRight,
@@ -41,8 +42,9 @@ const INITIAL_FORM: FormData = {
 export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }) => {
   const [formData, setFormData] = useState<FormData>(INITIAL_FORM);
   const [focusedField, setFocusedField] = useState<string | null>(null);
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submissionError, setSubmissionError] = useState('');
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -71,16 +73,25 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
     return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
 
     setStatus('loading');
-
-    // Simulate submission delay
-    setTimeout(() => {
+    setSubmissionError('');
+    try {
+      const response = await fetch('/api/inquiries/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      const result = await readApiResult(response);
+      if (!response.ok) throw new Error(result.message || 'Unable to send your inquiry.');
       setStatus('success');
-    }, 1200);
+    } catch (error) {
+      setStatus('error');
+      setSubmissionError(error instanceof Error ? error.message : 'Unable to send your inquiry.');
+    }
   };
 
   const handleReset = () => {
@@ -160,7 +171,7 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
               onClick={scrollToContact}
               className="w-full sm:w-auto px-7 py-4 rounded-full bg-white/30 border border-[#0A1930]/20 text-[#0A1930] font-bold text-sm hover:bg-white/50 transition-colors"
             >
-              Contact Studio Directly
+              Contact Us Directly
             </button>
           </div>
         </div>
@@ -172,12 +183,12 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
       <section
         id="contact"
         className="py-24 sm:py-32 bg-[#FAF7F2] text-[#161B22] relative overflow-hidden"
-        aria-label="Contact AGL Creatives Studio"
+        aria-label="Contact AGL Creatives"
       >
         <div id="contact-form-section" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
             
-            {/* LEFT COLUMN: Studio Information & Channels */}
+            {/* LEFT COLUMN: Company Information & Channels */}
             <div className="lg:col-span-5 flex flex-col justify-between">
               <div>
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FF9933]/15 border border-[#FF9933]/30 text-[#0A1930] text-xs font-bold uppercase tracking-widest mb-3">
@@ -190,31 +201,31 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                 </h2>
 
                 <p className="text-sm sm:text-base text-[#161B22]/75 mt-4 leading-relaxed max-w-md">
-                  Whether you need a custom structural dieline, eco-friendly folding cartons, or a complete luxury unboxing overhaul, our packaging engineers and print specialists are ready to collaborate.
+                  As a printing and packaging solution company, we help with box structures, materials, printing, and production from first brief to dispatch.
                 </p>
 
                 {/* Contact Items List */}
                 <div className="mt-8 sm:mt-10 space-y-6">
                   {/* Phone */}
                   <a
-                    href="tel:+919876543210"
+                    href="tel:+917982214262"
                     className="flex items-start gap-4 group p-3 -mx-3 rounded-2xl hover:bg-white/80 transition-colors"
                   >
                     <div className="w-12 h-12 rounded-2xl bg-[#0A1930] text-white flex items-center justify-center shrink-0 group-hover:bg-[#FF9933] group-hover:text-[#0A1930] transition-colors shadow-sm">
                       <Phone className="w-5 h-5" />
                     </div>
                     <div>
-                      <div className="text-xs font-mono text-[#12295A]/60 uppercase">Direct Studio Phone</div>
+                      <div className="text-xs font-mono text-[#12295A]/60 uppercase">Contact Number</div>
                       <div className="text-base font-bold text-[#0A1930] group-hover:text-[#2F6FED] transition-colors">
-                        +91 98765 43210
+                        +91 7982214262
                       </div>
-                      <div className="text-xs text-[#161B22]/60 mt-0.5">Mon–Sat, 10:00 AM – 7:00 PM IST</div>
+                      <div className="text-xs text-[#161B22]/60 mt-0.5">Mon–Sat, 10:00 AM – 6:00 PM IST</div>
                     </div>
                   </a>
 
                   {/* WhatsApp Quick Chat */}
                   <a
-                    href="https://wa.me/919876543210?text=Hi%20AGL%20Creatives,%20I'd%20like%20to%20discuss%20a%20packaging%20project."
+                    href="https://wa.me/917982214262?text=Hi%20AGL%20Creatives,%20I'd%20like%20to%20discuss%20a%20printing%20or%20packaging%20project."
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-start gap-4 group p-3 -mx-3 rounded-2xl hover:bg-white/80 transition-colors"
@@ -225,28 +236,24 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                     <div>
                       <div className="text-xs font-mono text-[#12295A]/60 uppercase">WhatsApp Instant Support</div>
                       <div className="text-base font-bold text-[#0A1930] group-hover:text-[#2F6FED] transition-colors">
-                        +91 98765 43210
+                        +91 7982214262
                       </div>
                       <div className="text-xs text-[#161B22]/60 mt-0.5">Direct chat for specs &amp; fast quote estimates</div>
                     </div>
                   </a>
 
                   {/* Email */}
-                  <a
-                    href="mailto:hello@aglcreatives.com"
-                    className="flex items-start gap-4 group p-3 -mx-3 rounded-2xl hover:bg-white/80 transition-colors"
-                  >
+                  <div className="flex items-start gap-4 p-3 -mx-3">
                     <div className="w-12 h-12 rounded-2xl bg-[#0A1930] text-white flex items-center justify-center shrink-0 group-hover:bg-[#FF9933] group-hover:text-[#0A1930] transition-colors shadow-sm">
                       <Mail className="w-5 h-5" />
                     </div>
                     <div>
                       <div className="text-xs font-mono text-[#12295A]/60 uppercase">Production & Inquiries</div>
-                      <div className="text-base font-bold text-[#0A1930] group-hover:text-[#2F6FED] transition-colors">
-                        hello@aglcreatives.com
-                      </div>
+                      <a href="mailto:support@aglcreatives.com" className="block text-base font-bold text-[#0A1930] hover:text-[#2F6FED] transition-colors">support@aglcreatives.com</a>
+                      <a href="mailto:hr@aglcreatives.in" className="block text-base font-bold text-[#0A1930] hover:text-[#2F6FED] transition-colors">hr@aglcreatives.in</a>
                       <div className="text-xs text-[#161B22]/60 mt-0.5">Quotes returned within 24 business hours</div>
                     </div>
-                  </a>
+                  </div>
 
                   {/* Address */}
                   <div className="flex items-start gap-4 p-3 -mx-3">
@@ -254,12 +261,12 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                       <MapPin className="w-5 h-5" />
                     </div>
                     <div>
-                      <div className="text-xs font-mono text-[#12295A]/60 uppercase">Studio & Print Facility</div>
+                      <div className="text-xs font-mono text-[#12295A]/60 uppercase">Printing and Packaging Solution Company</div>
                       <div className="text-sm sm:text-base font-bold text-[#0A1930]">
-                        Plot 14, Industrial Area Phase 2
+                        Faridabad, Haryana, India
                       </div>
                       <div className="text-xs text-[#161B22]/60 mt-0.5">
-                        Okhla, New Delhi – 110020, India
+                        Faridabad – 121001, India
                       </div>
                     </div>
                   </div>
@@ -270,12 +277,12 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                       <Clock className="w-5 h-5 text-[#2F6FED]" />
                     </div>
                     <div>
-                      <div className="text-xs font-mono text-[#12295A]/60 uppercase">Sample Room & Working Hours</div>
+                      <div className="text-xs font-mono text-[#12295A]/60 uppercase">Working Hours</div>
                       <div className="text-sm font-bold text-[#0A1930]">
-                        Mon–Sat, 10:00 AM – 7:00 PM IST
+                        Mon–Sat, 10:00 AM – 6:00 PM IST
                       </div>
                       <div className="text-xs text-[#161B22]/60 mt-0.5">
-                        Material archive &amp; sampling room visits by appointment
+                        Production and inquiry support during working hours
                       </div>
                     </div>
                   </div>
@@ -284,7 +291,7 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                 {/* Social Channels (Navy circles that fill saffron on hover) */}
                 <div className="mt-10 pt-6 border-t border-[#12295A]/10">
                   <div className="text-xs font-mono uppercase tracking-widest text-[#12295A]/70 mb-3">
-                    Follow The Studio
+                    Follow AGL Creatives
                   </div>
                   <div className="flex items-center gap-3">
                     {[
@@ -501,8 +508,11 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                         </div>
                       </div>
 
-                      {/* Message Floating-Label Textarea */}
-                      <div className="relative pt-2">
+                      {/* Project details */}
+                      <div className="pt-2">
+                        <label htmlFor="contact-message" className="mb-2 block text-xs font-bold text-[#FF9933]">
+                          Describe your packaging project (quantities, dimensions, finish preferences) *
+                        </label>
                         <textarea
                           id="contact-message"
                           name="message"
@@ -511,25 +521,15 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                           onChange={handleInputChange}
                           onFocus={() => setFocusedField('message')}
                           onBlur={() => setFocusedField(null)}
-                          placeholder=" "
-                          className={`peer w-full pt-6 pb-2 text-sm text-[#0A1930] font-medium bg-transparent border-b-2 transition-colors duration-200 outline-none resize-none ${
+                          placeholder="Share project details"
+                          className={`w-full rounded-lg border-2 bg-[#FAF7F2] px-4 py-3 text-sm text-[#0A1930] font-medium transition-colors duration-200 outline-none resize-none ${
                             errors.message
                               ? 'border-red-500'
                               : focusedField === 'message'
                               ? 'border-[#FF9933]'
-                              : 'border-[#12295A]/20'
+                                : 'border-[#12295A]/20'
                           }`}
                         />
-                        <label
-                          htmlFor="contact-message"
-                          className={`absolute left-0 transition-all duration-200 pointer-events-none text-xs ${
-                            formData.message || focusedField === 'message'
-                              ? 'top-1 text-[#FF9933] font-bold text-[11px]'
-                              : 'top-7 text-[#12295A]/50 text-sm'
-                          }`}
-                        >
-                          Describe your packaging project (quantities, dimensions, finish preferences) *
-                        </label>
                         {errors.message && (
                           <span className="text-[11px] text-red-500 mt-1 block">
                             {errors.message}
@@ -548,7 +548,7 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                           {status === 'loading' ? (
                             <>
                               <Loader2 className="w-5 h-5 animate-spin text-[#0A1930]" />
-                              <span>Submitting Specs to Studio...</span>
+                              <span>Submitting packaging inquiry...</span>
                             </>
                           ) : (
                             <>
@@ -558,6 +558,12 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                           )}
                         </button>
                       </div>
+
+                      {status === 'error' && (
+                        <p role="alert" className="border-l-4 border-red-600 bg-red-50 px-4 py-3 text-sm text-red-800">
+                          {submissionError}
+                        </p>
+                      )}
 
                       <div className="text-center">
                         <span className="text-[11px] font-mono text-[#12295A]/60">

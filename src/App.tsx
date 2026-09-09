@@ -1,29 +1,32 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
-import { QuoteModal } from './components/QuoteModal';
 import { Preloader } from './components/Preloader';
 import { ScrollToTop } from './components/ScrollToTop';
 import { HomePage } from './pages/HomePage';
-import { ProductsPage } from './pages/ProductsPage';
-import { ProductDetailPage } from './pages/ProductDetailPage';
+import { QuoteRequestPage } from './pages/QuoteRequestPage';
+import { CatalogIndexPage, CatalogNodePage } from './pages/CatalogPages';
 
 export default function App() {
-  const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
+  );
+}
+
+function AppContent() {
   const [isPreloaderComplete, setIsPreloaderComplete] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const handleOpenQuoteModal = () => {
-    setIsQuoteModalOpen(true);
-  };
-
-  const handleCloseQuoteModal = () => {
-    setIsQuoteModalOpen(false);
+    navigate('/request-quote');
   };
 
   return (
-    <BrowserRouter>
-      <div className="relative min-h-screen bg-[#FAF7F2] text-[#161B22] font-sans antialiased overflow-x-hidden">
+    <div className="relative min-h-screen bg-[#FAF7F2] text-[#161B22] font-sans antialiased overflow-x-hidden">
         {/* 0. Scroll to top handler on route navigation */}
         <ScrollToTop />
 
@@ -37,7 +40,7 @@ export default function App() {
         <Navbar onOpenQuoteModal={handleOpenQuoteModal} />
 
         {/* 5. Main Routed Content */}
-        <main className="min-h-[calc(100vh-300px)]">
+        <main className={location.pathname === '/request-quote' ? 'min-h-screen' : 'min-h-[calc(100vh-300px)]'}>
           <Routes>
             {/* Route 1: Main Landing / Marketing Page */}
             <Route
@@ -48,29 +51,20 @@ export default function App() {
             {/* Route 2: Product Catalog Page */}
             <Route
               path="/products"
-              element={<ProductsPage onOpenQuoteModal={handleOpenQuoteModal} />}
+              element={<CatalogIndexPage />}
             />
 
-            {/* Route 3: Product Detail Template (Phase 10 Placeholder) */}
-            <Route
-              path="/products/:slug"
-              element={<ProductDetailPage onOpenQuoteModal={handleOpenQuoteModal} />}
-            />
+            <Route path="/products/*" element={<CatalogNodePage />} />
+
+            <Route path="/request-quote" element={<QuoteRequestPage />} />
 
             {/* Catch-all fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
 
-        {/* 6. Shared Studio Footer */}
         <Footer onOpenQuoteModal={handleOpenQuoteModal} />
 
-        {/* 7. Interactive Studio Quote Modal */}
-        <QuoteModal
-          isOpen={isQuoteModalOpen}
-          onClose={handleCloseQuoteModal}
-        />
-      </div>
-    </BrowserRouter>
+    </div>
   );
 }

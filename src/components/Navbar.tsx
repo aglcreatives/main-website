@@ -108,7 +108,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenQuoteModal }) => {
           >
             <AglLogo
               className="h-9 sm:h-10 transition-colors duration-300"
-              variant={isScrolled || location.pathname !== '/' ? 'light' : 'dark'}
+              variant="light"
             />
           </Link>
 
@@ -130,8 +130,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenQuoteModal }) => {
                         ? 'text-[#FF9933] bg-white/10 font-semibold'
                         : 'text-slate-200 hover:text-white hover:bg-white/10'
                       : isHomeActive
-                      ? 'text-[#0A1930] bg-[#12295A]/10 font-bold'
-                      : 'text-[#12295A] hover:text-[#0A1930] hover:bg-[#12295A]/5'
+                      ? 'text-white bg-white/15 font-bold'
+                      : 'text-white/85 hover:text-white hover:bg-white/15'
                   }`}
                 >
                   <span>{item.label}</span>
@@ -146,7 +146,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenQuoteModal }) => {
 
                   <span
                     className={`absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] rounded-full transition-all duration-300 group-hover:w-4 ${
-                      isScrolled || location.pathname !== '/' ? 'bg-[#FF9933]' : 'bg-[#2F6FED]'
+                      'bg-[#FF9933]'
                     } ${isProductsRoute || isHomeActive ? 'w-4' : ''}`}
                   />
                 </button>
@@ -175,7 +175,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenQuoteModal }) => {
               className={`p-2.5 rounded-xl transition-colors ${
                 isScrolled || location.pathname !== '/'
                   ? 'text-white hover:bg-white/10'
-                  : 'text-[#0A1930] hover:bg-[#0A1930]/10'
+                  : 'text-white hover:bg-white/15'
               }`}
               aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
             >
@@ -255,7 +255,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenQuoteModal }) => {
               </button>
 
               <div className="text-center text-xs text-slate-400">
-                AGL Creatives Studio • DESIGN • PRINT • PACK
+                AGL Creatives • DESIGN • PRINT • PACK
               </div>
             </motion.div>
           </motion.div>
@@ -264,4 +264,3 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenQuoteModal }) => {
     </>
   );
 };
-

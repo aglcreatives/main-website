@@ -113,3 +113,17 @@ div[id="why-agl"] {
   animation-play-state: paused;
 }
 
+@keyframes catalog-view-more-motion {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.catalog-view-more-label {
+  animation: catalog-view-more-motion 2.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .catalog-view-more-label {
+    animation: none;
+  }
+}

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { ArrowRight, ShieldCheck, Award, CheckCircle2, Loader2, Mail, Instagram, Linkedin, Facebook, Twitter } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Loader2, Mail, Instagram, Linkedin, Facebook, Twitter } from 'lucide-react';
 import { AglLogo } from './AglLogo';
+import { readApiResult } from '../lib/api';
 
 interface FooterProps {
   onOpenQuoteModal: () => void;
@@ -9,7 +10,8 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ onOpenQuoteModal }) => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
-  const [newsletterStatus, setNewsletterStatus] = useState<'idle' | 'loading' | 'success'>('idle');
+  const [newsletterStatus, setNewsletterStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [newsletterError, setNewsletterError] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -47,16 +49,29 @@ export const Footer: React.FC<FooterProps> = ({ onOpenQuoteModal }) => {
     navigate(href);
   };
 
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newsletterEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newsletterEmail)) {
+      setNewsletterStatus('error');
+      setNewsletterError('Enter a valid email address to subscribe.');
       return;
     }
     setNewsletterStatus('loading');
-    setTimeout(() => {
+    setNewsletterError('');
+    try {
+      const response = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: newsletterEmail }),
+      });
+      const result = await readApiResult(response);
+      if (!response.ok) throw new Error(result.message || 'Unable to complete the subscription.');
       setNewsletterStatus('success');
       setNewsletterEmail('');
-    }, 900);
+    } catch (error) {
+      setNewsletterStatus('error');
+      setNewsletterError(error instanceof Error ? error.message : 'Unable to complete the subscription.');
+    }
   };
 
   return (
@@ -65,21 +80,19 @@ export const Footer: React.FC<FooterProps> = ({ onOpenQuoteModal }) => {
       className="bg-[#0A1930] text-[#FAF7F2] relative overflow-hidden border-t border-white/10"
       aria-label="Site Footer"
     >
-      {/* Background Decorative Large Monogram / Fold-line Grid for Subtle Texture */}
+      {/* Background fold-line grid for subtle packaging texture */}
       <div className="absolute inset-0 opacity-[0.035] pointer-events-none overflow-hidden flex items-center justify-center">
         <svg
           viewBox="0 0 1000 600"
           className="w-full h-full stroke-white fill-none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          {/* Large AGL Monogram Lines */}
-          <path d="M150,500 L300,100 L450,500 L380,500 L340,380 L260,380 L220,500 Z" strokeWidth="6" />
-          <path d="M550,150 C750,150 850,250 850,380 C850,500 700,520 580,520 L580,380 L720,380" strokeWidth="6" />
-          <path d="M820,100 L880,100 L880,520 L1000,520" strokeWidth="6" />
           {/* Fold dieline grid */}
           <line x1="0" y1="300" x2="1000" y2="300" strokeWidth="2" strokeDasharray="12 12" />
           <line x1="500" y1="0" x2="500" y2="600" strokeWidth="2" strokeDasharray="12 12" />
           <circle cx="500" cy="300" r="240" strokeWidth="1.5" strokeDasharray="8 8" />
+          <rect x="170" y="130" width="220" height="180" strokeWidth="3" strokeDasharray="10 10" />
+          <rect x="610" y="290" width="210" height="150" strokeWidth="3" strokeDasharray="10 10" />
         </svg>
       </div>
 
@@ -105,21 +118,11 @@ export const Footer: React.FC<FooterProps> = ({ onOpenQuoteModal }) => {
                 DESIGN • PRINT • PACK
               </div>
               <div className="text-xs text-slate-300 mt-0.5 font-medium">
-                Premier Custom Structural Packaging &amp; Precision Print Studio
+                Printing and Packaging Solution Company
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-[#FF9933] font-mono">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>ISO 9001 &amp; FSC CERTIFIED</span>
-            </div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-slate-300 font-mono">
-              <Award className="w-3.5 h-3.5 text-[#2F6FED]" />
-              <span>EST. 2014</span>
-            </div>
-          </div>
         </div>
 
         {/* MIDDLE: 4 Columns (Company, Products & Services, Contact, Newsletter) */}
@@ -136,7 +139,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenQuoteModal }) => {
                   onClick={() => handleNavClick('/')}
                   className="hover:text-[#FF9933] transition-colors cursor-pointer"
                 >
-                  About Studio
+                  About AGL Creatives
                 </button>
               </li>
               <li>
@@ -198,7 +201,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenQuoteModal }) => {
                   to="/products/rigid-gift-box"
                   className="hover:text-[#FF9933] transition-colors block"
                 >
-                  Rigid &amp; Magnetic Gift Boxes
+                  Magnetic Closure Rigid Boxes
                 </Link>
               </li>
               <li>
@@ -206,31 +209,31 @@ export const Footer: React.FC<FooterProps> = ({ onOpenQuoteModal }) => {
                   to="/products/reverse-tuck-end-box"
                   className="hover:text-[#FF9933] transition-colors block"
                 >
-                  Folding Cartons &amp; Sleeves
+                  Reverse Tuck End Boxes
                 </Link>
               </li>
               <li>
                 <Link
-                  to="/products/mailer-box"
+                  to="/products/straight-tuck-end-box"
                   className="hover:text-[#FF9933] transition-colors block"
                 >
-                  Corrugated E-Commerce Mailers
+                  Straight Tuck End Boxes
                 </Link>
               </li>
               <li>
                 <Link
-                  to="/products/standup-pouch"
+                  to="/products/regular-slotted-container"
                   className="hover:text-[#FF9933] transition-colors block"
                 >
-                  Barrier Pouches &amp; Bags
+                  Regular Slotted Containers
                 </Link>
               </li>
               <li>
                 <Link
-                  to="/products/product-label-roll"
+                  to="/products/full-overlap-container"
                   className="hover:text-[#FF9933] transition-colors block"
                 >
-                  Roll Labels &amp; Tamper Holograms
+                  Full Overlap Containers
                 </Link>
               </li>
               <li>
@@ -238,7 +241,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenQuoteModal }) => {
                   to="/products"
                   className="hover:text-[#FF9933] transition-colors block text-[#FF9933] font-semibold text-xs mt-2"
                 >
-                  View All Products (8 Formats) →
+                  View All Products (16 Formats) →
                 </Link>
               </li>
             </ul>
@@ -247,42 +250,49 @@ export const Footer: React.FC<FooterProps> = ({ onOpenQuoteModal }) => {
           {/* Column 3: Contact Details (3 cols on desktop) */}
           <div className="lg:col-span-3">
             <h3 className="text-xs font-bold font-mono uppercase tracking-widest text-[#FF9933] mb-4">
-              Contact Studio
+              Contact
             </h3>
             <div className="space-y-3 text-sm text-slate-300">
               <div>
-                <span className="text-[11px] font-mono text-slate-400 block uppercase">Print Facility</span>
-                <span className="text-white font-medium block">Plot 14, Industrial Area Phase 2</span>
-                <span className="text-slate-400 text-xs">Okhla, New Delhi – 110020, India</span>
+                <span className="text-[11px] font-mono text-slate-400 block uppercase">Printing and Packaging Solution Company</span>
+                <span className="text-white font-medium block">Faridabad, Haryana, India</span>
+                <span className="text-slate-400 text-xs">Faridabad – 121001, India</span>
               </div>
               <div>
-                <span className="text-[11px] font-mono text-slate-400 block uppercase">Inquiries &amp; Quotes</span>
+                <span className="text-[11px] font-mono text-slate-400 block uppercase">Production &amp; Inquiries</span>
                 <a
-                  href="mailto:hello@aglcreatives.com"
+                  href="mailto:support@aglcreatives.com"
                   className="text-white font-medium hover:text-[#FF9933] transition-colors"
                 >
-                  hello@aglcreatives.com
+                  support@aglcreatives.com
                 </a>
-              </div>
-              <div>
-                <span className="text-[11px] font-mono text-slate-400 block uppercase">Direct Studio Line</span>
                 <a
-                  href="tel:+919876543210"
+                  href="mailto:hr@aglcreatives.in"
                   className="text-white font-medium hover:text-[#FF9933] transition-colors block"
                 >
-                  +91 98765 43210
+                  hr@aglcreatives.in
                 </a>
-                <span className="text-slate-400 text-xs block mt-0.5">Mon–Sat, 10:00 AM – 7:00 PM IST</span>
+                <span className="text-slate-400 text-xs block mt-0.5">Quotes returned within 24 business hours</span>
               </div>
               <div>
-                <span className="text-[11px] font-mono text-slate-400 block uppercase">WhatsApp Direct</span>
+                <span className="text-[11px] font-mono text-slate-400 block uppercase">Contact Number</span>
                 <a
-                  href="https://wa.me/919876543210?text=Hi%20AGL%20Creatives,%20I'd%20like%20to%20discuss%20a%20packaging%20project."
+                  href="tel:+917982214262"
+                  className="text-white font-medium hover:text-[#FF9933] transition-colors block"
+                >
+                  +91 7982214262
+                </a>
+                <span className="text-slate-400 text-xs block mt-0.5">Mon–Sat, 10:00 AM – 6:00 PM IST</span>
+              </div>
+              <div>
+                <span className="text-[11px] font-mono text-slate-400 block uppercase">WhatsApp Instant Support</span>
+                <a
+                  href="https://wa.me/917982214262?text=Hi%20AGL%20Creatives,%20I'd%20like%20to%20discuss%20a%20printing%20or%20packaging%20project."
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[#FF9933] hover:underline transition-colors text-xs inline-flex items-center gap-1 font-medium"
                 >
-                  Chat on WhatsApp (+91 98765 43210) →
+                  Direct chat for specs &amp; fast quote estimates →
                 </a>
               </div>
             </div>
@@ -329,6 +339,9 @@ export const Footer: React.FC<FooterProps> = ({ onOpenQuoteModal }) => {
                     </>
                   )}
                 </button>
+                {newsletterStatus === 'error' && (
+                  <p role="alert" className="text-xs leading-relaxed text-red-300">{newsletterError}</p>
+                )}
               </form>
             )}
 
@@ -380,4 +393,3 @@ export const Footer: React.FC<FooterProps> = ({ onOpenQuoteModal }) => {
     </footer>
   );
 };
-
