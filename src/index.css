@@ -69,22 +69,14 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   -webkit-backface-visibility: hidden;
 }
 
-/* Custom Scrollbar */
+/* Keep the full site scrollable while hiding browser scrollbar chrome. */
+html {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 ::-webkit-scrollbar {
-  width: 7px;
-}
-
-::-webkit-scrollbar-track {
-  background: #FAF7F2;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #12295A;
-  border-radius: 9999px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #FF9933;
+  display: none;
 }
 
 /* Section Scroll Offsets for Sticky Navbar */

@@ -8,7 +8,7 @@ interface ProductsPageProps {
 export const ProductsPage: React.FC<ProductsPageProps> = ({
   onOpenQuoteModal,
 }) => (
-  <div className="relative isolate min-h-screen overflow-hidden bg-[#f2eee7] pt-24 text-[#0A1930] sm:pt-28">
+  <div className="relative isolate min-h-screen overflow-hidden bg-[#f2eee7] text-[#0A1930]">
     <img
       src="/images/hero/folding-cartons-studio.png"
       alt=""

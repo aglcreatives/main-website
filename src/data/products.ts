@@ -1,8 +1,35 @@
+import { BOX_CATALOG_DEFINITIONS, FLEXIBLE_PACKAGING_DEFINITIONS, LABELS_STICKERS_DEFINITIONS, RETAIL_ECOMMERCE_DEFINITIONS } from './catalog';
+
 export type ProductCategory =
   | 'All'
   | 'Folding Cartons'
   | 'Rigid Boxes'
-  | 'Corrugated Boxes';
+  | 'Corrugated Boxes'
+  | 'Mailer Boxes'
+  | 'Specialty Boxes'
+  | 'Display Boxes'
+  | 'Food / Takeaway Boxes'
+  | 'Pouches'
+  | 'Bags'
+  | 'Sachets'
+  | 'Film & Rollstock'
+  | 'Wraps & Wrappers'
+  | 'Specialty Flexible Packaging'
+  | 'Flexible Liquid Packaging'
+  | 'Flexible Packaging by Application'
+  | 'Adhesive Labels / Pressure-Sensitive Labels'
+  | 'Sticker Labels'
+  | 'Sleeve Labels'
+  | 'In-Mold Labels'
+  | 'Glue-Applied Labels'
+  | 'Functional Labels'
+  | 'Safety & Warning Labels'
+  | 'Security & Authentication Labels'
+  | 'Variable & Smart Labels'
+  | 'Specialty / Decorative Labels'
+  | 'Tags'
+  | 'Application-Based Labels'
+  | 'E-Commerce Boxes' | 'Shipping & Mailing Supplies' | 'Protective Packaging' | 'Void Fill & Cushioning' | 'Packaging Tapes' | 'Packaging Labels & Stickers' | 'Retail Bags' | 'Retail Packaging' | 'Retail Display & Merchandising' | 'Retail Tags & Cards' | 'E-Commerce Inserts & Marketing' | 'Poly Bags & Garment Packaging' | 'Wrapping Supplies' | 'Fulfillment & Warehouse Supplies';
 
 export interface ProductSize {
   id: string;
@@ -65,6 +92,9 @@ export interface Product {
   name: string;
   category: ProductCategory;
   categoryTag: string;
+  rootCategory?: string;
+  parentCategory?: string;
+  subcategory?: string;
   startingPriceInr: number;
   priceUnit: string;
   minQuantity: number;
@@ -73,6 +103,7 @@ export interface Product {
   descriptionParagraphs: string[];
   mainImageUrl: string;
   galleryImages: {
+    key: string;
     url: string;
     alt: string;
     caption: string;
@@ -95,6 +126,13 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
   'Folding Cartons',
   'Rigid Boxes',
   'Corrugated Boxes',
+  'Mailer Boxes',
+  'Specialty Boxes',
+  'Display Boxes',
+  'Food / Takeaway Boxes',
+  'Pouches', 'Bags', 'Sachets', 'Film & Rollstock', 'Wraps & Wrappers', 'Specialty Flexible Packaging', 'Flexible Liquid Packaging', 'Flexible Packaging by Application',
+  'Adhesive Labels / Pressure-Sensitive Labels', 'Sticker Labels', 'Sleeve Labels', 'In-Mold Labels', 'Glue-Applied Labels', 'Functional Labels', 'Safety & Warning Labels', 'Security & Authentication Labels', 'Variable & Smart Labels', 'Specialty / Decorative Labels', 'Tags', 'Application-Based Labels',
+  'E-Commerce Boxes', 'Shipping & Mailing Supplies', 'Protective Packaging', 'Void Fill & Cushioning', 'Packaging Tapes', 'Packaging Labels & Stickers', 'Retail Bags', 'Retail Packaging', 'Retail Display & Merchandising', 'Retail Tags & Cards', 'E-Commerce Inserts & Marketing', 'Poly Bags & Garment Packaging', 'Wrapping Supplies', 'Fulfillment & Warehouse Supplies',
 ];
 
 type ProductSeed = {
@@ -109,6 +147,9 @@ type ProductSeed = {
   useCase: string;
   features: string[];
   imageAlt: string;
+  rootCategory?: string;
+  parentCategory?: string;
+  subcategory?: string;
 };
 
 const commonPrintingOptions: PrintingOption[] = [
@@ -211,7 +252,17 @@ const corrugatedMaterials: ProductMaterial[] = [
   },
 ];
 
-const sizesByCategory: Record<Exclude<ProductCategory, 'All'>, ProductSize[]> = {
+const flexibleMaterials: ProductMaterial[] = [
+  { id: 'flexible-pe', name: 'PE Flexible Film', gsm: 'Custom micron', swatchColor: '#E8F4ED', multiplier: 1, description: 'Flexible polyethylene film specified for sealing, moisture resistance, and product fit.' },
+  { id: 'flexible-laminate', name: 'Barrier Laminate', gsm: 'Custom multi-layer', swatchColor: '#D6A36F', multiplier: 1.18, description: 'Multi-layer laminate selected for the required oxygen, moisture, aroma, and light barrier.' },
+];
+
+const labelMaterials: ProductMaterial[] = [
+  { id: 'label-paper', name: 'Label Paper', gsm: 'Custom gsm', swatchColor: '#FFFDF8', multiplier: 1, description: 'Paper face stock selected for print fidelity, application, and finish.' },
+  { id: 'label-film', name: 'Label Film', gsm: 'Custom micron', swatchColor: '#DDEBFF', multiplier: 1.15, description: 'Durable PP, PE, or PET film selected for moisture resistance and handling.' },
+];
+
+const sizesByCategory: Partial<Record<Exclude<ProductCategory, 'All'>, ProductSize[]>> = {
   'Folding Cartons': [
     { id: 'small-carton', label: 'Small Retail', dimensionsCm: '6 x 4 x 12 cm', description: 'Compact cartons for bottles or tubes', multiplier: 0.9 },
     { id: 'medium-carton', label: 'Medium Retail', dimensionsCm: '10 x 6 x 16 cm', description: 'Everyday shelf-ready carton size', multiplier: 1 },
@@ -230,20 +281,70 @@ const sizesByCategory: Record<Exclude<ProductCategory, 'All'>, ProductSize[]> = 
     { id: 'large-shipper', label: 'Bulk Shipper', dimensionsCm: '45 x 32 x 24 cm', description: 'Larger protective transit carton', multiplier: 1.42 },
     { id: 'custom-shipper', label: 'Custom RSC/HSC/FOL', dimensionsCm: 'Custom Specs', description: 'Engineered to your fill weight', multiplier: 1.25 },
   ],
+  'Mailer Boxes': [
+    { id: 'small-mailer', label: 'Small Mailer', dimensionsCm: '18 x 12 x 5 cm', description: 'Compact delivery mailer', multiplier: 0.9 },
+    { id: 'medium-mailer', label: 'Standard Mailer', dimensionsCm: '25 x 18 x 8 cm', description: 'Everyday DTC delivery size', multiplier: 1 },
+    { id: 'large-mailer', label: 'Large Mailer', dimensionsCm: '35 x 25 x 10 cm', description: 'Room for bundled orders', multiplier: 1.3 },
+    { id: 'custom-mailer', label: 'Custom Dieline', dimensionsCm: 'Custom Specs', description: 'Designed around your shipment', multiplier: 1.2 },
+  ],
+  'Specialty Boxes': [
+    { id: 'small-specialty', label: 'Small Specialty', dimensionsCm: '8 x 8 x 4 cm', description: 'Compact gift or sample format', multiplier: 0.9 },
+    { id: 'medium-specialty', label: 'Standard Specialty', dimensionsCm: '15 x 12 x 6 cm', description: 'Popular specialty format', multiplier: 1 },
+    { id: 'large-specialty', label: 'Large Specialty', dimensionsCm: '25 x 20 x 10 cm', description: 'Room for premium sets', multiplier: 1.3 },
+    { id: 'custom-specialty', label: 'Custom Shape', dimensionsCm: 'Custom Specs', description: 'Built around a bespoke structure', multiplier: 1.25 },
+  ],
+  'Display Boxes': [
+    { id: 'counter-display-size', label: 'Counter Display', dimensionsCm: '25 x 18 x 20 cm', description: 'Compact retail counter unit', multiplier: 0.95 },
+    { id: 'shelf-display-size', label: 'Shelf Display', dimensionsCm: '35 x 25 x 25 cm', description: 'Standard shelf-ready format', multiplier: 1 },
+    { id: 'floor-display-size', label: 'Floor Display', dimensionsCm: '60 x 40 x 140 cm', description: 'Freestanding retail unit', multiplier: 1.65 },
+    { id: 'custom-display', label: 'Custom Display', dimensionsCm: 'Custom Specs', description: 'Engineered for your retail planogram', multiplier: 1.4 },
+  ],
+  'Food / Takeaway Boxes': [
+    { id: 'single-serve-food', label: 'Single Serve', dimensionsCm: '12 x 12 x 6 cm', description: 'Individual takeaway portion', multiplier: 0.88 },
+    { id: 'standard-food', label: 'Standard Takeaway', dimensionsCm: '20 x 20 x 8 cm', description: 'Everyday food-service size', multiplier: 1 },
+    { id: 'family-food', label: 'Family Share', dimensionsCm: '30 x 30 x 10 cm', description: 'Larger sharing and delivery format', multiplier: 1.3 },
+    { id: 'custom-food', label: 'Custom Food Format', dimensionsCm: 'Custom Specs', description: 'Sized around your menu item', multiplier: 1.18 },
+  ],
+  'Pouches': [{ id: 'small-pouch', label: 'Small Pouch', dimensionsCm: '10 x 15 cm', description: 'Single-serve pouch format', multiplier: 0.9 }, { id: 'medium-pouch', label: 'Medium Pouch', dimensionsCm: '16 x 24 cm', description: 'Everyday flexible pouch', multiplier: 1 }, { id: 'large-pouch', label: 'Large Pouch', dimensionsCm: '25 x 35 cm', description: 'Family-size pouch', multiplier: 1.3 }, { id: 'custom-pouch', label: 'Custom Format', dimensionsCm: 'Custom Specs', description: 'Built for your fill and machine', multiplier: 1.2 }],
+  'Bags': [{ id: 'small-bag', label: 'Small Bag', dimensionsCm: '12 x 18 cm', description: 'Compact flexible bag', multiplier: 0.9 }, { id: 'medium-bag', label: 'Medium Bag', dimensionsCm: '20 x 30 cm', description: 'Standard flexible bag', multiplier: 1 }, { id: 'large-bag', label: 'Large Bag', dimensionsCm: '35 x 50 cm', description: 'Bulk flexible bag', multiplier: 1.3 }, { id: 'custom-bag', label: 'Custom Format', dimensionsCm: 'Custom Specs', description: 'Specified to your product', multiplier: 1.2 }],
+  'Sachets': [{ id: 'small-sachet', label: 'Sample Sachet', dimensionsCm: '6 x 10 cm', description: 'Compact single-use format', multiplier: 0.85 }, { id: 'standard-sachet', label: 'Standard Sachet', dimensionsCm: '10 x 15 cm', description: 'Everyday single-serve format', multiplier: 1 }, { id: 'large-sachet', label: 'Large Sachet', dimensionsCm: '15 x 22 cm', description: 'Larger portion format', multiplier: 1.2 }, { id: 'custom-sachet', label: 'Custom Format', dimensionsCm: 'Custom Specs', description: 'Sized for your dose', multiplier: 1.15 }],
+  'Film & Rollstock': [{ id: 'film-sample', label: 'Sample Roll', dimensionsCm: 'Custom width', description: 'Trial film format', multiplier: 0.9 }, { id: 'film-standard', label: 'Production Roll', dimensionsCm: 'Custom width', description: 'Machine-ready rollstock', multiplier: 1 }, { id: 'film-bulk', label: 'Bulk Roll', dimensionsCm: 'Custom width', description: 'High-volume production roll', multiplier: 1.3 }, { id: 'film-custom', label: 'Custom Specification', dimensionsCm: 'Custom Specs', description: 'Matched to equipment', multiplier: 1.2 }],
+  'Wraps & Wrappers': [{ id: 'wrap-small', label: 'Small Wrap', dimensionsCm: 'Custom web', description: 'Compact product wrap', multiplier: 0.9 }, { id: 'wrap-standard', label: 'Standard Wrap', dimensionsCm: 'Custom web', description: 'Production wrapper format', multiplier: 1 }, { id: 'wrap-bulk', label: 'Bulk Wrap', dimensionsCm: 'Custom web', description: 'High-volume wrap format', multiplier: 1.25 }, { id: 'wrap-custom', label: 'Custom Specification', dimensionsCm: 'Custom Specs', description: 'Matched to machinery', multiplier: 1.2 }],
+  'Specialty Flexible Packaging': [{ id: 'specialty-flex-small', label: 'Small Format', dimensionsCm: 'Custom Specs', description: 'Compact specialty format', multiplier: 0.9 }, { id: 'specialty-flex-standard', label: 'Standard Format', dimensionsCm: 'Custom Specs', description: 'Production specialty format', multiplier: 1 }, { id: 'specialty-flex-large', label: 'Large Format', dimensionsCm: 'Custom Specs', description: 'Large specialty format', multiplier: 1.3 }, { id: 'specialty-flex-custom', label: 'Custom Specification', dimensionsCm: 'Custom Specs', description: 'Engineered to your product', multiplier: 1.2 }],
+  'Flexible Liquid Packaging': [{ id: 'liquid-small', label: 'Small Liquid Pack', dimensionsCm: '100 ml', description: 'Single-serve liquid format', multiplier: 0.9 }, { id: 'liquid-standard', label: 'Standard Liquid Pack', dimensionsCm: '500 ml', description: 'Everyday liquid format', multiplier: 1 }, { id: 'liquid-large', label: 'Large Liquid Pack', dimensionsCm: '1 L', description: 'Large refill format', multiplier: 1.3 }, { id: 'liquid-custom', label: 'Custom Fill', dimensionsCm: 'Custom Specs', description: 'Specified to fill volume', multiplier: 1.2 }],
+  'Flexible Packaging by Application': [{ id: 'application-sample', label: 'Sample Format', dimensionsCm: 'Custom Specs', description: 'Application-specific sample', multiplier: 0.9 }, { id: 'application-standard', label: 'Standard Format', dimensionsCm: 'Custom Specs', description: 'Application-specific format', multiplier: 1 }, { id: 'application-large', label: 'Large Format', dimensionsCm: 'Custom Specs', description: 'Application-specific large format', multiplier: 1.3 }, { id: 'application-custom', label: 'Custom Specification', dimensionsCm: 'Custom Specs', description: 'Designed around your application', multiplier: 1.2 }],
+  'Adhesive Labels / Pressure-Sensitive Labels': [{ id: 'label-small', label: 'Small Label', dimensionsCm: '5 x 5 cm', description: 'Compact adhesive label', multiplier: 0.9 }, { id: 'label-standard', label: 'Standard Label', dimensionsCm: '10 x 10 cm', description: 'Everyday product label', multiplier: 1 }, { id: 'label-large', label: 'Large Label', dimensionsCm: '15 x 20 cm', description: 'Large information label', multiplier: 1.2 }, { id: 'label-custom', label: 'Custom Size', dimensionsCm: 'Custom Specs', description: 'Specified for your surface', multiplier: 1.15 }],
+  'Sticker Labels': [{ id: 'sticker-small', label: 'Small Sticker', dimensionsCm: '5 x 5 cm', description: 'Compact sticker', multiplier: 0.9 }, { id: 'sticker-standard', label: 'Standard Sticker', dimensionsCm: '10 x 10 cm', description: 'Everyday sticker format', multiplier: 1 }, { id: 'sticker-large', label: 'Large Sticker', dimensionsCm: '15 x 15 cm', description: 'Promotional sticker format', multiplier: 1.2 }, { id: 'sticker-custom', label: 'Custom Shape', dimensionsCm: 'Custom Specs', description: 'Custom die-cut sticker', multiplier: 1.2 }],
+  'Sleeve Labels': [{ id: 'sleeve-small', label: 'Small Sleeve', dimensionsCm: 'Custom layflat', description: 'Compact container sleeve', multiplier: 0.9 }, { id: 'sleeve-standard', label: 'Standard Sleeve', dimensionsCm: 'Custom layflat', description: 'Production sleeve format', multiplier: 1 }, { id: 'sleeve-large', label: 'Large Sleeve', dimensionsCm: 'Custom layflat', description: 'Large container sleeve', multiplier: 1.25 }, { id: 'sleeve-custom', label: 'Custom Sleeve', dimensionsCm: 'Custom Specs', description: 'Specified for container geometry', multiplier: 1.2 }],
+  'In-Mold Labels': [{ id: 'iml-small', label: 'Small IML', dimensionsCm: 'Custom Specs', description: 'Small molded-container label', multiplier: 0.9 }, { id: 'iml-standard', label: 'Standard IML', dimensionsCm: 'Custom Specs', description: 'Standard in-mold label', multiplier: 1 }, { id: 'iml-large', label: 'Large IML', dimensionsCm: 'Custom Specs', description: 'Large molded-container label', multiplier: 1.25 }, { id: 'iml-custom', label: 'Custom IML', dimensionsCm: 'Custom Specs', description: 'Matched to mold geometry', multiplier: 1.2 }],
+  'Glue-Applied Labels': [{ id: 'glue-small', label: 'Small Label', dimensionsCm: '5 x 5 cm', description: 'Compact glue-applied label', multiplier: 0.9 }, { id: 'glue-standard', label: 'Standard Label', dimensionsCm: '10 x 10 cm', description: 'Production glue-applied label', multiplier: 1 }, { id: 'glue-large', label: 'Large Label', dimensionsCm: '15 x 20 cm', description: 'Large wrap label', multiplier: 1.2 }, { id: 'glue-custom', label: 'Custom Label', dimensionsCm: 'Custom Specs', description: 'Specified for application equipment', multiplier: 1.15 }],
+  'Functional Labels': [{ id: 'functional-small', label: 'Small Label', dimensionsCm: '5 x 3 cm', description: 'Compact functional label', multiplier: 0.9 }, { id: 'functional-standard', label: 'Standard Label', dimensionsCm: '10 x 5 cm', description: 'Operational label format', multiplier: 1 }, { id: 'functional-large', label: 'Large Label', dimensionsCm: '15 x 10 cm', description: 'Large information label', multiplier: 1.2 }, { id: 'functional-custom', label: 'Custom Label', dimensionsCm: 'Custom Specs', description: 'Matched to scanning or information needs', multiplier: 1.15 }],
+  'Safety & Warning Labels': [{ id: 'safety-small', label: 'Small Safety Label', dimensionsCm: '5 x 5 cm', description: 'Compact safety marking', multiplier: 0.9 }, { id: 'safety-standard', label: 'Standard Safety Label', dimensionsCm: '10 x 10 cm', description: 'Standard warning format', multiplier: 1 }, { id: 'safety-large', label: 'Large Safety Label', dimensionsCm: '15 x 15 cm', description: 'High-visibility safety marking', multiplier: 1.2 }, { id: 'safety-custom', label: 'Custom Safety Label', dimensionsCm: 'Custom Specs', description: 'Specified for compliance needs', multiplier: 1.15 }],
+  'Security & Authentication Labels': [{ id: 'security-small', label: 'Small Security Label', dimensionsCm: '5 x 2 cm', description: 'Compact authentication label', multiplier: 0.95 }, { id: 'security-standard', label: 'Standard Security Label', dimensionsCm: '10 x 5 cm', description: 'Standard tamper/security format', multiplier: 1 }, { id: 'security-large', label: 'Large Security Label', dimensionsCm: '15 x 10 cm', description: 'Large security seal', multiplier: 1.25 }, { id: 'security-custom', label: 'Custom Security Label', dimensionsCm: 'Custom Specs', description: 'Specified for authentication workflow', multiplier: 1.25 }],
+  'Variable & Smart Labels': [{ id: 'smart-small', label: 'Small Smart Label', dimensionsCm: '5 x 3 cm', description: 'Compact data label', multiplier: 0.95 }, { id: 'smart-standard', label: 'Standard Smart Label', dimensionsCm: '10 x 5 cm', description: 'Standard smart label', multiplier: 1 }, { id: 'smart-large', label: 'Large Smart Label', dimensionsCm: '15 x 10 cm', description: 'Large data label', multiplier: 1.2 }, { id: 'smart-custom', label: 'Custom Smart Label', dimensionsCm: 'Custom Specs', description: 'Matched to digital workflow', multiplier: 1.25 }],
+  'Specialty / Decorative Labels': [{ id: 'decorative-small', label: 'Small Decorative Label', dimensionsCm: '5 x 5 cm', description: 'Compact premium label', multiplier: 0.95 }, { id: 'decorative-standard', label: 'Standard Decorative Label', dimensionsCm: '10 x 10 cm', description: 'Standard decorative label', multiplier: 1 }, { id: 'decorative-large', label: 'Large Decorative Label', dimensionsCm: '15 x 15 cm', description: 'Large premium label', multiplier: 1.25 }, { id: 'decorative-custom', label: 'Custom Decorative Label', dimensionsCm: 'Custom Specs', description: 'Custom premium finish', multiplier: 1.3 }],
+  'Tags': [{ id: 'tag-small', label: 'Small Tag', dimensionsCm: '5 x 8 cm', description: 'Compact product tag', multiplier: 0.9 }, { id: 'tag-standard', label: 'Standard Tag', dimensionsCm: '7 x 12 cm', description: 'Standard retail tag', multiplier: 1 }, { id: 'tag-large', label: 'Large Tag', dimensionsCm: '10 x 18 cm', description: 'Large information tag', multiplier: 1.2 }, { id: 'tag-custom', label: 'Custom Tag', dimensionsCm: 'Custom Specs', description: 'Custom die-cut tag', multiplier: 1.2 }],
+  'Application-Based Labels': [{ id: 'application-label-small', label: 'Small Label', dimensionsCm: '5 x 5 cm', description: 'Application-specific compact label', multiplier: 0.9 }, { id: 'application-label-standard', label: 'Standard Label', dimensionsCm: '10 x 10 cm', description: 'Application-specific label', multiplier: 1 }, { id: 'application-label-large', label: 'Large Label', dimensionsCm: '15 x 15 cm', description: 'Large application label', multiplier: 1.2 }, { id: 'application-label-custom', label: 'Custom Label', dimensionsCm: 'Custom Specs', description: 'Specified for your industry', multiplier: 1.15 }],
 };
 
-const materialByCategory: Record<Exclude<ProductCategory, 'All'>, ProductMaterial[]> = {
+const materialByCategory: Partial<Record<Exclude<ProductCategory, 'All'>, ProductMaterial[]>> = {
   'Folding Cartons': cartonMaterials,
   'Rigid Boxes': rigidMaterials,
   'Corrugated Boxes': corrugatedMaterials,
+  'Mailer Boxes': corrugatedMaterials,
+  'Specialty Boxes': cartonMaterials,
+  'Display Boxes': corrugatedMaterials,
+  'Food / Takeaway Boxes': cartonMaterials,
+  'Pouches': flexibleMaterials, 'Bags': flexibleMaterials, 'Sachets': flexibleMaterials, 'Film & Rollstock': flexibleMaterials, 'Wraps & Wrappers': flexibleMaterials, 'Specialty Flexible Packaging': flexibleMaterials, 'Flexible Liquid Packaging': flexibleMaterials, 'Flexible Packaging by Application': flexibleMaterials,
+  'Adhesive Labels / Pressure-Sensitive Labels': labelMaterials, 'Sticker Labels': labelMaterials, 'Sleeve Labels': labelMaterials, 'In-Mold Labels': labelMaterials, 'Glue-Applied Labels': labelMaterials, 'Functional Labels': labelMaterials, 'Safety & Warning Labels': labelMaterials, 'Security & Authentication Labels': labelMaterials, 'Variable & Smart Labels': labelMaterials, 'Specialty / Decorative Labels': labelMaterials, 'Tags': labelMaterials, 'Application-Based Labels': labelMaterials,
 };
 
-const categoryCopy: Record<Exclude<ProductCategory, 'All'>, {
+const categoryCopy: Partial<Record<Exclude<ProductCategory, 'All'>, {
   leadTime: string;
   minQuantity: number;
   substrates: string[];
   finishes: string[];
-}> = {
+}>> = {
   'Folding Cartons': {
     leadTime: '5-7 Business Days',
     minQuantity: 500,
@@ -262,6 +363,30 @@ const categoryCopy: Record<Exclude<ProductCategory, 'All'>, {
     substrates: ['E-Flute Corrugated Board', 'B-Flute Corrugated Board', 'Kraft Liner Board'],
     finishes: ['Flexographic Print', 'Litho Lamination', 'Water-Based Coating'],
   },
+  'Mailer Boxes': { leadTime: '6-9 Business Days', minQuantity: 250, substrates: ['E-Flute Corrugated Board', 'B-Flute Corrugated Board'], finishes: ['Exterior Print', 'Inside Print', 'Water-Based Coating'] },
+  'Specialty Boxes': { leadTime: '7-10 Business Days', minQuantity: 500, substrates: ['SBS Paperboard', 'Kraft Paperboard', 'Rigid Board'], finishes: ['Matte Lamination', 'Foil Stamping', 'Spot UV'] },
+  'Display Boxes': { leadTime: '7-10 Business Days', minQuantity: 250, substrates: ['E-Flute Corrugated Board', 'B-Flute Corrugated Board', 'Kraft Liner Board'], finishes: ['Flexographic Print', 'Litho Lamination', 'Water-Based Coating'] },
+  'Food / Takeaway Boxes': { leadTime: '5-8 Business Days', minQuantity: 500, substrates: ['Food-Safe SBS Paperboard', 'Kraft Paperboard', 'Grease-Resistant Board'], finishes: ['Food-Safe Aqueous Coating', 'Exterior CMYK Print', 'Kraft Finish'] },
+  'Pouches': { leadTime: '10-14 Business Days', minQuantity: 1000, substrates: ['PE Film', 'Barrier Laminate', 'Recyclable Film'], finishes: ['Matte', 'Gloss', 'Clear Window'] },
+  'Bags': { leadTime: '10-14 Business Days', minQuantity: 1000, substrates: ['PE Film', 'Barrier Laminate', 'Paper Laminate'], finishes: ['Matte', 'Gloss', 'Custom Print'] },
+  'Sachets': { leadTime: '10-14 Business Days', minQuantity: 5000, substrates: ['PE Film', 'Barrier Laminate', 'Foil Laminate'], finishes: ['Registered Print', 'Tear Notch', 'Easy Open'] },
+  'Film & Rollstock': { leadTime: '10-14 Business Days', minQuantity: 250, substrates: ['PE Film', 'BOPP Film', 'Barrier Laminate'], finishes: ['Printed Rollstock', 'Barrier Coating', 'Machine Specification'] },
+  'Wraps & Wrappers': { leadTime: '10-14 Business Days', minQuantity: 1000, substrates: ['BOPP Film', 'PE Film', 'Shrink Film'], finishes: ['Registered Print', 'Heat Seal', 'Machine Specification'] },
+  'Specialty Flexible Packaging': { leadTime: '12-16 Business Days', minQuantity: 1000, substrates: ['Barrier Laminate', 'Foil Laminate', 'Forming Film'], finishes: ['Custom Barrier', 'Peelable Seal', 'Thermal Process Ready'] },
+  'Flexible Liquid Packaging': { leadTime: '12-16 Business Days', minQuantity: 1000, substrates: ['Barrier Laminate', 'Spout Fitment Film', 'Retort Film'], finishes: ['Spout Fitment', 'Custom Barrier', 'Registered Print'] },
+  'Flexible Packaging by Application': { leadTime: '10-14 Business Days', minQuantity: 1000, substrates: ['PE Film', 'Barrier Laminate', 'Application-Specific Film'], finishes: ['Custom Print', 'Barrier Selection', 'Format Engineering'] },
+  'Adhesive Labels / Pressure-Sensitive Labels': { leadTime: '5-7 Business Days', minQuantity: 1000, substrates: ['Label Paper', 'PP Film', 'PET Film'], finishes: ['Matte', 'Gloss', 'Foil'] },
+  'Sticker Labels': { leadTime: '5-7 Business Days', minQuantity: 500, substrates: ['Paper', 'Vinyl', 'BOPP Film'], finishes: ['Matte', 'Gloss', 'Laminate'] },
+  'Sleeve Labels': { leadTime: '10-14 Business Days', minQuantity: 1000, substrates: ['PETG Film', 'PVC Film', 'OPS Film'], finishes: ['Full-Body Print', 'Tamper Band', 'Matte'] },
+  'In-Mold Labels': { leadTime: '10-14 Business Days', minQuantity: 5000, substrates: ['PP In-Mold Film', 'PE In-Mold Film'], finishes: ['Mold-Ready Print', 'Matte', 'Gloss'] },
+  'Glue-Applied Labels': { leadTime: '5-7 Business Days', minQuantity: 1000, substrates: ['Label Paper', 'Film Stock'], finishes: ['Gloss', 'Matte', 'Wet-Strength Coating'] },
+  'Functional Labels': { leadTime: '5-7 Business Days', minQuantity: 1000, substrates: ['Thermal Paper', 'Label Paper', 'Durable Film'], finishes: ['Variable Data', 'Barcode Print', 'Protective Laminate'] },
+  'Safety & Warning Labels': { leadTime: '5-7 Business Days', minQuantity: 1000, substrates: ['Durable Film', 'Label Paper', 'Reflective Stock'], finishes: ['High Visibility Print', 'Laminate', 'Chemical Resistance'] },
+  'Security & Authentication Labels': { leadTime: '7-10 Business Days', minQuantity: 1000, substrates: ['Destructible Film', 'Holographic Film', 'Security Paper'], finishes: ['Void Effect', 'Serialization', 'Hologram'] },
+  'Variable & Smart Labels': { leadTime: '7-10 Business Days', minQuantity: 1000, substrates: ['Smart Inlay Stock', 'Label Film', 'Thermal Paper'], finishes: ['Variable Data', 'QR Print', 'NFC/RFID Encoding'] },
+  'Specialty / Decorative Labels': { leadTime: '7-10 Business Days', minQuantity: 1000, substrates: ['Premium Paper', 'Metallic Film', 'Textured Stock'], finishes: ['Foil', 'Emboss', 'Soft-Touch'] },
+  'Tags': { leadTime: '5-7 Business Days', minQuantity: 500, substrates: ['Uncoated Card', 'Kraft Card', 'Premium Card'], finishes: ['Die Cut', 'Foil', 'Emboss'] },
+  'Application-Based Labels': { leadTime: '5-10 Business Days', minQuantity: 1000, substrates: ['Label Paper', 'Durable Film', 'Specialty Stock'], finishes: ['Custom Print', 'Application-Specific Adhesive', 'Laminate'] },
 };
 
 const svgToDataUri = (svg: string) =>
@@ -438,8 +563,34 @@ const corrugatedArt = (id: string, viewIndex: number, p: ReturnType<typeof getVi
   return variants[id] || variants['corrugated-boxes'];
 };
 
+const flexibleArt = (seed: ProductSeed, p: ReturnType<typeof getVisualPalette>) => {
+  const isFilm = /film|rollstock|wrap|laminate/i.test(seed.name);
+  if (isFilm) return `<ellipse cx="520" cy="475" rx="220" ry="150" fill="#D6A36F" stroke="#173B35" stroke-width="6"/><ellipse cx="520" cy="475" rx="82" ry="58" fill="#FAF7F2" stroke="#173B35" stroke-width="6"/><path d="M520 325 H860 Q930 325 930 395 V555 Q930 625 860 625 H520" fill="#E8F4ED" stroke="#173B35" stroke-width="6"/><text x="720" y="495" text-anchor="middle" font-size="34" font-weight="800" fill="#173B35">FLEXIBLE FILM</text>`;
+  return `<path d="M410 190 H810 L860 690 H360 Z" fill="#D6A36F" stroke="#173B35" stroke-width="7"/><path d="M430 250 H790" stroke="#FAF7F2" stroke-width="28"/><rect x="455" y="350" width="310" height="175" rx="10" fill="#E8F4ED"/><text x="610" y="450" text-anchor="middle" font-size="34" font-weight="800" fill="#173B35">FLEX PACK</text>`;
+};
+
+const labelArt = (seed: ProductSeed) => {
+  const smart = /qr|nfc|rfid|barcode/i.test(seed.name);
+  const sleeve = /sleeve|in-mold/i.test(seed.name);
+  const tag = /tag/i.test(seed.name);
+  const body = sleeve ? `<path d="M410 210h400l55 490H355z" fill="#2F6FED" stroke="#12295A" stroke-width="8"/><rect x="450" y="325" width="320" height="195" fill="#FFFDF8"/>` : tag ? `<path d="M420 180h350l90 90v420H340V270z" fill="#FFFDF8" stroke="#12295A" stroke-width="8"/><circle cx="770" cy="270" r="22" fill="#FF9933"/>` : `<rect x="310" y="240" width="600" height="390" rx="36" fill="#FFFDF8" stroke="#12295A" stroke-width="8"/><rect x="365" y="305" width="480" height="100" rx="12" fill="#2F6FED"/>`;
+  const data = smart ? `<g fill="#12295A">${Array.from({ length: 36 }, (_, index) => `<rect x="${455 + (index % 6) * 28}" y="${440 + Math.floor(index / 6) * 28}" width="18" height="18"/>`).join('')}</g>` : `<path d="M395 470h410M395 520h300" stroke="#12295A" stroke-width="18"/>`;
+  return `${body}${data}<text x="610" y="750" text-anchor="middle" font-size="34" font-weight="800" fill="#12295A">${escapeSvgText(seed.name.toUpperCase().slice(0, 28))}</text>`;
+};
+
+const retailArt = (seed: ProductSeed) => {
+  const l = seed.name.toLowerCase();
+  if (/tape/.test(l)) return `<circle cx="560" cy="450" r="190" fill="#E3BD8D" stroke="#4A2E18" stroke-width="12"/><circle cx="560" cy="450" r="75" fill="#FAF7F2" stroke="#4A2E18" stroke-width="12"/><path d="M560 260h300v380H560" fill="#D6A36F" stroke="#4A2E18" stroke-width="12"/>`;
+  if (/bubble|foam|cushion|void fill|air pillow/.test(l)) return `<rect x="310" y="260" width="600" height="380" rx="36" fill="#DDEBFF" stroke="#173B35" stroke-width="10"/>${Array.from({length:20},(_,i)=>`<circle cx="${370+(i%5)*115}" cy="${335+Math.floor(i/5)*85}" r="32" fill="#B9DCCC" stroke="#173B35" stroke-width="5"/>`).join('')}`;
+  if (/bag|mailer|pouch|envelope/.test(l)) return `<path d="M390 210h420l70 500H320z" fill="#D6A36F" stroke="#4A2E18" stroke-width="10"/><path d="M410 275h380" stroke="#FFFDF8" stroke-width="28"/>`;
+  return `<rect x="330" y="250" width="560" height="390" fill="#C99A68" stroke="#4A2E18" stroke-width="12"/><path d="M330 250l280-110 280 110" fill="#E3BD8D" stroke="#4A2E18" stroke-width="12"/>`;
+};
+
 const renderProductArt = (seed: ProductSeed, viewIndex: number) => {
   const palette = getVisualPalette(seed.category);
+  if (seed.rootCategory === 'Labels & Stickers') return labelArt(seed);
+  if (seed.rootCategory === 'Retail & E-Commerce Supplies') return retailArt(seed);
+  if (seed.rootCategory === 'Flexible Packaging') return flexibleArt(seed, palette);
   if (seed.category === 'Rigid Boxes') return rigidArt(seed.id, viewIndex, palette);
   if (seed.category === 'Corrugated Boxes') return corrugatedArt(seed.id, viewIndex, palette);
   return cartonArt(seed.id, viewIndex, palette);
@@ -528,7 +679,24 @@ const makeProductImage = (seed: ProductSeed, viewIndex: number) => {
   return svgToDataUri(svg);
 };
 
-const seeds: ProductSeed[] = [
+/** Verified, direct-file redirects from Wikimedia Commons. Attribution/license review is retained in the image audit. */
+const RESEARCHED_IMAGE_URLS: Record<string, string[]> = {
+  'Water-Activated Tape': ['https://upload.wikimedia.org/wikipedia/commons/d/d6/Water_Activated_Gummed_Tape.jpg'],
+  'Stand-Up Pouch with Zipper': ['https://upload.wikimedia.org/wikipedia/commons/5/5f/Easy_opening_for_pouch.jpg'],
+  'Shrink Sleeve': ['https://upload.wikimedia.org/wikipedia/commons/f/fe/Shrink_sleeve.jpg'],
+  'Full-Body Shrink Sleeve': ['https://upload.wikimedia.org/wikipedia/commons/f/fe/Shrink_sleeve.jpg'],
+  'Partial Shrink Sleeve': ['https://upload.wikimedia.org/wikipedia/commons/f/fe/Shrink_sleeve.jpg'],
+  'Neck Shrink Sleeve': ['https://upload.wikimedia.org/wikipedia/commons/f/fe/Shrink_sleeve.jpg'],
+  'Tamper-Evident Shrink Sleeve': ['https://upload.wikimedia.org/wikipedia/commons/f/fe/Shrink_sleeve.jpg'],
+  'Product Hang Tag': ['https://upload.wikimedia.org/wikipedia/commons/9/97/Higgins_%26_Waters%2C_Inc.%2C_Generals_Comission_Receivers%2C_Baltimore%2C_hang_tag.jpg'],
+  'Clothing Hang Tag': ['https://upload.wikimedia.org/wikipedia/commons/9/97/Higgins_%26_Waters%2C_Inc.%2C_Generals_Comission_Receivers%2C_Baltimore%2C_hang_tag.jpg'],
+  'Price Hang Tag': ['https://upload.wikimedia.org/wikipedia/commons/9/97/Higgins_%26_Waters%2C_Inc.%2C_Generals_Comission_Receivers%2C_Baltimore%2C_hang_tag.jpg'],
+  'Promotional Hang Tag': ['https://upload.wikimedia.org/wikipedia/commons/9/97/Higgins_%26_Waters%2C_Inc.%2C_Generals_Comission_Receivers%2C_Baltimore%2C_hang_tag.jpg'],
+  'Bubble Wrap': ['https://upload.wikimedia.org/wikipedia/commons/9/9d/Bubble_wrap_%288436498020%29.jpg'],
+  'Retort Pouch': ['https://upload.wikimedia.org/wikipedia/commons/f/fa/Retort_pouch.jpg'],
+};
+
+const legacySeeds: ProductSeed[] = [
   {
     id: 'folding-cartons',
     slug: 'folding-cartons',
@@ -739,8 +907,78 @@ const seeds: ProductSeed[] = [
   },
 ];
 
-const makeGallery = (seed: ProductSeed) =>
-  [0, 1, 2, 3].map((viewIndex) => ({
+const categorySku = (category: string) => category.replace(/[^A-Za-z]/g, '').slice(0, 3).toUpperCase();
+
+/** Every purchasable box type is generated from the canonical catalog hierarchy. */
+const seeds: ProductSeed[] = BOX_CATALOG_DEFINITIONS.flatMap((category) =>
+  category.products.map((product, index) => ({
+    id: product.id,
+    slug: product.slug,
+    sku: `AGL-${categorySku(category.title)}-${String(index + 1).padStart(2, '0')}-2026`,
+    name: `${product.title} Boxes`,
+    category: category.title as Exclude<ProductCategory, 'All'>,
+    categoryTag: category.title,
+    shortDescription: product.subtitle,
+    structure: product.description,
+    useCase: product.useCase,
+    features: product.features,
+    imageAlt: `${product.title.toLowerCase()} custom packaging`,
+  })),
+).concat(FLEXIBLE_PACKAGING_DEFINITIONS.flatMap((category, categoryIndex) =>
+  category.subcategories.flatMap((subcategory, subcategoryIndex) =>
+    subcategory.products.map((product, productIndex) => ({
+      id: product.id,
+      slug: product.slug,
+      sku: `AGL-FLX-${String(categoryIndex + 1).padStart(2, '0')}${String(subcategoryIndex + 1).padStart(2, '0')}${String(productIndex + 1).padStart(2, '0')}`,
+      name: product.title,
+      category: product.category as Exclude<ProductCategory, 'All'>,
+      categoryTag: `${product.category} · ${product.subcategory}`,
+      shortDescription: product.subtitle,
+      structure: product.description,
+      useCase: product.useCase,
+      features: product.features,
+      imageAlt: `${product.title.toLowerCase()} flexible packaging`,
+      rootCategory: product.rootCategory,
+      parentCategory: product.category,
+      subcategory: product.subcategory,
+    })),
+  ),
+)).concat(LABELS_STICKERS_DEFINITIONS.flatMap((category, categoryIndex) =>
+  category.subcategories.flatMap((subcategory, subcategoryIndex) =>
+    subcategory.products.map((product, productIndex) => ({
+      id: product.id,
+      slug: product.slug,
+      sku: `AGL-LBL-${String(categoryIndex + 1).padStart(2, '0')}${String(subcategoryIndex + 1).padStart(2, '0')}${String(productIndex + 1).padStart(2, '0')}`,
+      name: product.title,
+      category: product.category as Exclude<ProductCategory, 'All'>,
+      categoryTag: `${product.category} · ${product.subcategory}`,
+      shortDescription: product.subtitle,
+      structure: product.description,
+      useCase: product.useCase,
+      features: product.features,
+      imageAlt: `${product.title.toLowerCase()} label or tag`,
+      rootCategory: product.rootCategory,
+      parentCategory: product.category,
+      subcategory: product.subcategory,
+    })),
+  ),
+)).concat(RETAIL_ECOMMERCE_DEFINITIONS.flatMap((category, categoryIndex) =>
+  category.subcategories.flatMap((subcategory, subcategoryIndex) => subcategory.products.map((product, productIndex) => ({
+    id: product.id, slug: product.slug,
+    sku: `AGL-RET-${String(categoryIndex + 1).padStart(2, '0')}${String(subcategoryIndex + 1).padStart(2, '0')}${String(productIndex + 1).padStart(2, '0')}`,
+    name: product.title, category: product.category as Exclude<ProductCategory, 'All'>,
+    categoryTag: `${product.category} · ${product.subcategory}`, shortDescription: product.subtitle,
+    structure: product.description, useCase: product.useCase, features: product.features,
+    imageAlt: `${product.title.toLowerCase()} retail and e-commerce supply`, rootCategory: product.rootCategory,
+    parentCategory: product.category, subcategory: product.subcategory,
+  }))),
+));
+
+const makeGallery = (seed: ProductSeed) => {
+  const researched = RESEARCHED_IMAGE_URLS[seed.name];
+  if (researched) return researched.map((url, index) => ({ key: `${seed.slug}-source-${index + 1}`, url, alt: seed.imageAlt, caption: 'Verified product-source image' }));
+  return [0, 1, 2, 3].map((viewIndex) => ({
+    key: `${seed.slug}-${viewIndex + 1}`,
     url: makeProductImage(seed, viewIndex),
     alt: `${seed.imageAlt} view ${viewIndex + 1}`,
     caption: [
@@ -750,9 +988,10 @@ const makeGallery = (seed: ProductSeed) =>
       'Replacement-ready licensed visual option',
     ][viewIndex],
   }));
+};
 
 const makeProduct = (seed: ProductSeed, index: number): Product => {
-  const category = categoryCopy[seed.category];
+  const category = categoryCopy[seed.category] ?? { leadTime: '5-10 Business Days', minQuantity: 500, substrates: ['Paper', 'Film', 'Corrugated Board'], finishes: ['Custom Print', 'Matte', 'Gloss'] };
 
   return {
     id: seed.id,
@@ -761,6 +1000,9 @@ const makeProduct = (seed: ProductSeed, index: number): Product => {
     name: seed.name,
     category: seed.category,
     categoryTag: seed.categoryTag,
+    rootCategory: seed.rootCategory,
+    parentCategory: seed.parentCategory,
+    subcategory: seed.subcategory,
     startingPriceInr: 0,
     priceUnit: 'custom quote',
     minQuantity: category.minQuantity,
@@ -771,11 +1013,11 @@ const makeProduct = (seed: ProductSeed, index: number): Product => {
       seed.useCase,
       'AGL Creatives can adapt the dieline, board grade, print coverage, coatings, foil, embossing, and insert system around your product dimensions and brand artwork.',
     ],
-    mainImageUrl: makeProductImage(seed, index % 4),
+    mainImageUrl: (RESEARCHED_IMAGE_URLS[seed.name] ?? [makeProductImage(seed, 0)])[0],
     galleryImages: makeGallery(seed),
     keyFeatures: seed.features,
-    sizes: sizesByCategory[seed.category],
-    materials: materialByCategory[seed.category],
+    sizes: sizesByCategory[seed.category] ?? sizesByCategory['Corrugated Boxes']!,
+    materials: materialByCategory[seed.category] ?? corrugatedMaterials,
     printingOptions: commonPrintingOptions,
     coatings: commonCoatings,
     foilOptions: commonFoils,
@@ -828,3 +1070,27 @@ const makeProduct = (seed: ProductSeed, index: number): Product => {
 };
 
 export const PRODUCTS: Product[] = seeds.map(makeProduct);
+
+export type ProductImageAudit = {
+  productId: string;
+  slug: string;
+  name: string;
+  categoryPath: string[];
+  status: 'researched' | 'manual-review';
+  imageCount: number;
+  reason?: string;
+};
+
+/** Complete product-by-product image audit. Manual-review entries remain explicit until an exact source asset is verified. */
+export const PRODUCT_IMAGE_AUDIT: ProductImageAudit[] = PRODUCTS.map((product) => {
+  const researched = product.galleryImages.every(({ url }) => url.startsWith('https://'));
+  return {
+    productId: product.id,
+    slug: product.slug,
+    name: product.name,
+    categoryPath: [product.rootCategory ?? 'Boxes', product.parentCategory ?? product.category, product.subcategory ?? product.category],
+    status: researched ? 'researched' : 'manual-review',
+    imageCount: product.galleryImages.length,
+    ...(researched ? {} : { reason: 'Generated visual retained only as an explicit manual-review placeholder while an exact external product image is researched.' }),
+  };
+});

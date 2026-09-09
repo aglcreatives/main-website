@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
-import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 interface HeroProps {
   onOpenQuoteModal: () => void;
 }
 
 const SLIDES = [
-  { eyebrow: 'Custom corrugated packaging', title: 'Packaging that arrives with purpose.', copy: 'Strong, considered mailers and shipping boxes built to protect your product and make every delivery feel like your brand.', image: '/images/hero/kraft-mailer-studio.png', alt: 'Kraft mailer packaging in a pale blue product studio' },
-  { eyebrow: 'Premium folding cartons', title: 'Shelf presence, made tangible.', copy: 'From first sketch to finished carton, we shape memorable packaging for products that deserve a second look.', image: '/images/hero/folding-cartons-studio.png', alt: 'Warm toned folding cartons in a product studio' },
-  { eyebrow: 'Retail bags and finishing', title: 'Every detail carries your brand.', copy: 'Thoughtful bags, sleeves, labels, and finishing touches that bring a complete retail experience together.', image: '/images/hero/sustainable-retail-studio.png', alt: 'Sustainable retail packaging arranged on a green studio set' },
+  { eyebrow: 'Premium packaging solutions', title: 'Packaging that arrives with purpose.', copy: 'Strong, considered boxes, bags, and finishing touches built to protect your product and make every delivery feel like your brand.', image: '/images/hero/kraft-mailer-studio.png', imagePosition: 'object-left', alt: 'Burgundy premium boxes and paper bags in a studio' },
+  { eyebrow: 'Premium folding cartons', title: 'Shelf presence, made tangible.', copy: 'From first sketch to finished carton, we shape memorable packaging for products that deserve a second look.', image: '/images/hero/folding-cartons-studio.png', imagePosition: 'object-center', alt: 'Warm toned folding cartons in a product studio' },
+  { eyebrow: 'Retail bags and finishing', title: 'Every detail carries your brand.', copy: 'Thoughtful bags, sleeves, labels, and finishing touches that bring a complete retail experience together.', image: '/images/hero/sustainable-retail-studio.png', imagePosition: 'object-center', alt: 'Sustainable retail packaging arranged on a green studio set' },
 ];
 
 export const Hero: React.FC<HeroProps> = ({ onOpenQuoteModal }) => {
@@ -20,18 +20,16 @@ export const Hero: React.FC<HeroProps> = ({ onOpenQuoteModal }) => {
 
   useEffect(() => {
     if (isPaused) return;
-    const timer = window.setInterval(() => setActiveSlide((current) => (current + 1) % SLIDES.length), 3000);
+    const timer = window.setInterval(() => setActiveSlide((current) => (current + 1) % SLIDES.length), 2000);
     return () => window.clearInterval(timer);
   }, [isPaused]);
 
   const slide = SLIDES[activeSlide];
-  const goToSlide = (direction: -1 | 1) => setActiveSlide((current) => (current + direction + SLIDES.length) % SLIDES.length);
-
   return (
     <section id="home" className="relative h-[100dvh] min-h-[100svh] overflow-hidden bg-[#f2eee7]">
       <AnimatePresence>
         <motion.div key={slide.image} initial={{ opacity: 0, scale: 1.025 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.7, ease: 'easeInOut' }} className="absolute inset-0">
-          <img src={slide.image} alt={slide.alt} className="h-full w-full object-cover object-center" />
+          <img src={slide.image} alt={slide.alt} className={`h-full w-full object-cover ${slide.imagePosition}`} />
           <div className="absolute inset-0 bg-[#0A1930]/10" aria-hidden="true" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#081426]/72 via-[#081426]/38 to-transparent" aria-hidden="true" />
         </motion.div>
@@ -47,9 +45,8 @@ export const Hero: React.FC<HeroProps> = ({ onOpenQuoteModal }) => {
           </motion.div>
         </div>
       </div>
-      <div className="absolute bottom-7 left-0 right-0 z-20 mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="absolute bottom-7 left-0 right-0 z-20 mx-auto flex max-w-7xl items-center px-4 sm:px-6 lg:px-8">
         <div className="flex gap-2" role="tablist" aria-label="Hero slides">{SLIDES.map((item, index) => <button key={item.image} type="button" role="tab" aria-selected={activeSlide === index} aria-label={`Show slide ${index + 1}`} onClick={() => setActiveSlide(index)} className={`h-1.5 transition-all ${activeSlide === index ? 'w-12 bg-[#FF9933]' : 'w-6 bg-white/55 hover:bg-white'}`} />)}</div>
-        <div className="flex gap-2"><button type="button" aria-label="Previous slide" onClick={() => goToSlide(-1)} className="grid h-10 w-10 place-items-center border border-white/40 bg-[#0A1930]/40 text-white backdrop-blur-sm transition-colors hover:bg-white hover:text-[#0A1930]"><ChevronLeft className="h-5 w-5" /></button><button type="button" aria-label="Next slide" onClick={() => goToSlide(1)} className="grid h-10 w-10 place-items-center border border-white/40 bg-[#0A1930]/40 text-white backdrop-blur-sm transition-colors hover:bg-white hover:text-[#0A1930]"><ChevronRight className="h-5 w-5" /></button></div>
       </div>
     </section>
   );

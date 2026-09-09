@@ -674,7 +674,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ onOpenQuot
                       </div>
 
                       <Link
-                        to={`/products/${rel.slug}`}
+                        to={`/product/${rel.slug}`}
                         className="px-3 py-1.5 rounded-lg bg-[#FAF7F2] hover:bg-[#FF9933] text-[#0A1930] font-bold text-xs transition-colors flex items-center gap-1"
                       >
                         <span>Configure</span>

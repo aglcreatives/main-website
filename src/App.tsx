@@ -7,6 +7,8 @@ import { ScrollToTop } from './components/ScrollToTop';
 import { HomePage } from './pages/HomePage';
 import { QuoteRequestPage } from './pages/QuoteRequestPage';
 import { CatalogIndexPage, CatalogNodePage } from './pages/CatalogPages';
+import { ProductDetailPage } from './pages/ProductDetailPage';
+import { AboutPage } from './pages/AboutPage';
 
 export default function App() {
   return (
@@ -57,7 +59,11 @@ function AppContent() {
 
             <Route path="/products/*" element={<CatalogNodePage />} />
 
+            <Route path="/product/:slug" element={<ProductDetailPage onOpenQuoteModal={handleOpenQuoteModal} />} />
+
             <Route path="/request-quote" element={<QuoteRequestPage />} />
+
+            <Route path="/about" element={<AboutPage />} />
 
             {/* Catch-all fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />

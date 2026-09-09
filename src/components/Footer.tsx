@@ -136,7 +136,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenQuoteModal }) => {
               <li>
                 <button
                   type="button"
-                  onClick={() => handleNavClick('/')}
+                  onClick={() => handleNavClick('/about')}
                   className="hover:text-[#FF9933] transition-colors cursor-pointer"
                 >
                   About AGL Creatives
@@ -198,7 +198,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenQuoteModal }) => {
             <ul className="space-y-2.5 text-sm text-slate-300">
               <li>
                 <Link
-                  to="/products/rigid-gift-box"
+                  to="/product/magnetic-closure"
                   className="hover:text-[#FF9933] transition-colors block"
                 >
                   Magnetic Closure Rigid Boxes
@@ -206,7 +206,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenQuoteModal }) => {
               </li>
               <li>
                 <Link
-                  to="/products/reverse-tuck-end-box"
+                  to="/product/reverse-tuck-end-box"
                   className="hover:text-[#FF9933] transition-colors block"
                 >
                   Reverse Tuck End Boxes
@@ -214,7 +214,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenQuoteModal }) => {
               </li>
               <li>
                 <Link
-                  to="/products/straight-tuck-end-box"
+                  to="/product/straight-tuck-end-box"
                   className="hover:text-[#FF9933] transition-colors block"
                 >
                   Straight Tuck End Boxes
@@ -222,7 +222,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenQuoteModal }) => {
               </li>
               <li>
                 <Link
-                  to="/products/regular-slotted-container"
+                  to="/product/regular-slotted-container"
                   className="hover:text-[#FF9933] transition-colors block"
                 >
                   Regular Slotted Containers
@@ -230,7 +230,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenQuoteModal }) => {
               </li>
               <li>
                 <Link
-                  to="/products/full-overlap-container"
+                  to="/product/full-overlap-container"
                   className="hover:text-[#FF9933] transition-colors block"
                 >
                   Full Overlap Containers
@@ -241,7 +241,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenQuoteModal }) => {
                   to="/products"
                   className="hover:text-[#FF9933] transition-colors block text-[#FF9933] font-semibold text-xs mt-2"
                 >
-                  View All Products (16 Formats) →
+                  View All Product Formats →
                 </Link>
               </li>
             </ul>

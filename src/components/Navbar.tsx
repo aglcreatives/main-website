@@ -11,6 +11,7 @@ interface NavbarProps {
 
 const NAV_ITEMS: NavItem[] = [
   { label: 'Home', href: '/' },
+  { label: 'About', href: '/about' },
   { label: 'Services', href: '/#services' },
   { label: 'Products', href: '/products', badge: 'Get a Quote' },
   { label: 'Process', href: '/#process' },
@@ -88,8 +89,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenQuoteModal }) => {
       <header
         id="navbar"
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          isScrolled || location.pathname !== '/'
-            ? 'bg-[#0A1930]/95 backdrop-blur-md border-b border-[#FF9933]/25 shadow-[0_12px_40px_rgba(10,25,48,0.35)] py-3'
+          isScrolled
+            ? 'bg-[#0A1930]/95 backdrop-blur-md border-b border-[#FF9933]/25 shadow-[0_12px_40px_rgba(10,25,48,0.35)] py-5'
+            : location.pathname !== '/'
+            ? 'bg-[#0A1930]/95 backdrop-blur-md border-b border-[#FF9933]/25 shadow-[0_12px_40px_rgba(10,25,48,0.35)] py-5'
             : 'bg-transparent py-5'
         }`}
       >
@@ -116,6 +119,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenQuoteModal }) => {
           <nav className="hidden md:flex items-center space-x-1 lg:space-x-1.5">
             {NAV_ITEMS.map((item) => {
               const isProductsRoute = item.href === '/products' && location.pathname.startsWith('/products');
+              const isAboutRoute = item.href === '/about' && location.pathname === '/about';
               const isHomeActive = item.href === '/' && location.pathname === '/' && !location.hash;
 
               return (
@@ -126,7 +130,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenQuoteModal }) => {
                   onClick={() => handleNavClick(item.href)}
                   className={`relative px-3.5 py-2 text-sm font-medium transition-colors duration-200 group rounded-full cursor-pointer flex items-center gap-1.5 ${
                     isScrolled || location.pathname !== '/'
-                      ? isProductsRoute || isHomeActive
+                      ? isProductsRoute || isAboutRoute || isHomeActive
                         ? 'text-[#FF9933] bg-white/10 font-semibold'
                         : 'text-slate-200 hover:text-white hover:bg-white/10'
                       : isHomeActive
@@ -147,7 +151,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenQuoteModal }) => {
                   <span
                     className={`absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] rounded-full transition-all duration-300 group-hover:w-4 ${
                       'bg-[#FF9933]'
-                    } ${isProductsRoute || isHomeActive ? 'w-4' : ''}`}
+                    } ${isProductsRoute || isAboutRoute || isHomeActive ? 'w-4' : ''}`}
                   />
                 </button>
               );
