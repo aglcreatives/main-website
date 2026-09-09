@@ -20,7 +20,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenQuoteModal }) => {
 
   useEffect(() => {
     if (isPaused) return;
-    const timer = window.setInterval(() => setActiveSlide((current) => (current + 1) % SLIDES.length), 5000);
+    const timer = window.setInterval(() => setActiveSlide((current) => (current + 1) % SLIDES.length), 3000);
     return () => window.clearInterval(timer);
   }, [isPaused]);
 

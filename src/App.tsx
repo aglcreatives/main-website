@@ -33,6 +33,7 @@ function AppContent() {
         {/* 1. Brand Preloader with SVG Stroke Animation */}
         <Preloader onComplete={() => setIsPreloaderComplete(true)} />
 
+        <div className={isPreloaderComplete ? '' : 'invisible pointer-events-none'} aria-hidden={!isPreloaderComplete}>
         {/* 2. Subtle Paper Grain Tactile Texture Overlay */}
         <div className="paper-texture-overlay" aria-hidden="true" />
 
@@ -64,6 +65,7 @@ function AppContent() {
         </main>
 
         <Footer onOpenQuoteModal={handleOpenQuoteModal} />
+        </div>
 
     </div>
   );
