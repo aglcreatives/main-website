@@ -1,3 +1,4 @@
+// new command only
 export type Specification = { label: string; value: string };
 
 export interface CatalogNode {
