@@ -28,9 +28,8 @@ const images = {
   folding: "/images/hero/folding-cartons-studio.png",
   rigid: "/images/hero/sustainable-retail-studio.png",
   corrugated: "/images/hero/kraft-mailer-studio.png",
-  pouch: "/images/hero/sustainable-retail-studio.png",
-  labels: "/images/hero/folding-cartons-studio.png",
-  ecommerce: "/images/hero/sustainable-retail-studio.png",
+  labels: "/images/products/labels.jpeg",
+  ecommerce: "/images/products/retail-ecom.jpg",
   mailer: "/images/hero/kraft-mailer-studio.png",
 };
 
@@ -186,88 +185,7 @@ const BOX_CATEGORY_NODES: CatalogNode[] = BOX_CATALOG_DEFINITIONS.map((category)
   return { id: category.id, slug: category.slug, title: category.title, subtitle: category.subtitle, description: category.description, image, images: boxImages(category.slug, image), children: category.products.map((product) => ({ id: product.id, slug: product.slug, title: product.title, subtitle: product.subtitle, description: product.description, image, images: boxImages(product.slug, image), features: product.features, benefits: product.features, applications: [product.useCase], specifications: category.id === 'corrugated-boxes' ? corrugatedSpecifications : boxSpecs })) };
 });
 
-export type FlexibleProductDefinition = BoxProductDefinition & { rootCategory: 'Flexible Packaging'; category: string; subcategory: string; parentId: string; categoryId: string; subcategoryId: string };
-type FlexibleSubcategoryDefinition = { id: string; slug: string; title: string; subtitle: string; description: string; products: FlexibleProductDefinition[] };
-export type FlexibleCategoryDefinition = { id: string; slug: string; title: string; subtitle: string; description: string; subcategories: FlexibleSubcategoryDefinition[] };
-
 const kebab = (value: string) => value.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-const flexibleCopy = (title: string, category: string, subcategory: string) => {
-  const lower = title.toLowerCase();
-  const kind = lower.includes('film') || lower.includes('rollstock') || lower.includes('laminate') ? 'packaging film' : lower.includes('wrap') ? 'wrapping format' : lower.includes('sachet') || lower.includes('stick pack') ? 'single-serve sachet' : lower.includes('bag') ? 'flexible bag' : 'flexible pouch';
-  const detail = lower.includes('zipper') ? 'A resealable zipper supports repeat opening while protecting the contents.' : lower.includes('spout') ? 'An integrated spout controls pouring and makes dispensing cleaner.' : lower.includes('valve') ? 'A one-way valve manages gas release while protecting freshness.' : lower.includes('vacuum') ? 'The structure is designed to evacuate air for close product contact and extended protection.' : lower.includes('retort') ? 'Heat-resistant laminate layers support thermal processing for shelf-stable products.' : lower.includes('barrier') ? 'Barrier layers are selected to manage oxygen, moisture, aroma, or light exposure.' : lower.includes('shrink') ? 'The material contracts with controlled heat for a close, tamper-evident finish.' : lower.includes('stretch') ? 'Elastic film elongates to stabilize loads and hold products together.' : lower.includes('coffee') ? 'The format is tailored for aroma retention, shelf presence, and optional degassing.' : `The format is engineered around the seal layout, fill method, and handling needs of ${subcategory.toLowerCase()}.`;
-  return { description: `${title} is a ${kind} within ${subcategory}. ${detail}`, useCase: `${category} applications requiring a ${title.toLowerCase()} format.`, features: [title.includes('Zipper') ? 'Resealable closure' : 'Specified sealing format', `${subcategory} construction`, 'Custom print and barrier options'] };
-};
-const flexibleSub = (category: string, categoryId: string, title: string, productTitles: string[]): FlexibleSubcategoryDefinition => {
-  const id = kebab(title);
-  return { id, slug: id, title, subtitle: `${title} flexible formats`, description: `A focused range of ${title.toLowerCase()} for custom material, barrier, and print specifications.`, products: productTitles.map((productTitle) => { const base = kebab(productTitle); const productId = `${categoryId}-${id}-${base}`; const copy = flexibleCopy(productTitle, category, title); return { id: productId, slug: productId, title: productTitle, subtitle: `${productTitle} flexible packaging`, ...copy, rootCategory: 'Flexible Packaging', category, subcategory: title, parentId: 'flexible-packaging', categoryId, subcategoryId: id }; }) };
-};
-const flexibleCategory = (title: string, groups: [string, string[]][]): FlexibleCategoryDefinition => {
-  const id = kebab(title);
-  return { id, slug: id, title, subtitle: `${title} solutions`, description: `Custom ${title.toLowerCase()} specified for product protection, filling, presentation, and distribution.`, subcategories: groups.map(([group, products]) => flexibleSub(title, id, group, products)) };
-};
-
-/** Canonical nested Flexible Packaging hierarchy; leaf records feed the product detail data. */
-export const FLEXIBLE_PACKAGING_DEFINITIONS: FlexibleCategoryDefinition[] = [
-  flexibleCategory('Pouches', [
-    ['Flat Pouches', ['3-Side Seal Pouch', '4-Side Seal Pouch', 'Center Seal Pouch', 'Flat Sachet Pouch']],
-    ['Stand-Up Pouches', ['Stand-Up Pouch', 'Stand-Up Pouch with Zipper', 'Stand-Up Pouch with Spout', 'Stand-Up Pouch with Window', 'Stand-Up Pouch with Handle', 'Stand-Up Pouch with Valve', 'Retort Stand-Up Pouch', 'Refill Stand-Up Pouch']],
-    ['Flat-Bottom Pouches', ['Flat-Bottom Pouch', 'Flat-Bottom Pouch with Zipper', 'Flat-Bottom Pouch with Valve', 'Flat-Bottom Pouch with Window']],
-    ['Quad-Seal Pouches', ['Quad-Seal Pouch', 'Quad-Seal Pouch with Zipper', 'Quad-Seal Pouch with Valve', 'Quad-Seal Pouch with Window']],
-    ['Side-Gusset Pouches', ['Side-Gusset Pouch', 'Side-Gusset Coffee Pouch', 'Side-Gusset Pouch with Valve', 'Side-Gusset Pouch with Zipper']],
-    ['Spouted Pouches', ['Top-Spout Pouch', 'Corner-Spout Pouch', 'Center-Spout Pouch', 'Refill Spout Pouch', 'Retort Spouted Pouch']],
-    ['Shaped Pouches', ['Custom-Shaped Pouch', 'Contour Pouch', 'Bottle-Shaped Pouch', 'Character-Shaped Pouch', 'Die-Cut Pouch']],
-    ['Specialty Pouches', ['Retort Pouch', 'Vacuum Pouch', 'Reclosable Pouch', 'Child-Resistant Pouch', 'Peelable Pouch', 'High-Barrier Pouch']],
-  ]),
-  flexibleCategory('Bags', [
-    ['Pillow Bags', ['Standard Pillow Bag', 'Center-Seal Pillow Bag', 'Fin-Seal Pillow Bag', 'Pillow Bag with Gusset']],
-    ['Flat Bags', ['2-Side Seal Bag', '3-Side Seal Bag', '4-Side Seal Bag']],
-    ['Gusseted Bags', ['Side-Gusset Bag', 'Bottom-Gusset Bag', 'Block-Bottom Bag', 'Quad-Seal Bag']],
-    ['Paper-Based Flexible Bags', ['Paper Bag', 'Paper Laminated Bag', 'Paper Gusset Bag', 'Paper Stand-Up Bag']],
-    ['Heavy-Duty Flexible Bags', ['Bulk Bag', 'Industrial Bag', 'Liner Bag', 'FIBC / Bulk Bag']],
-  ]),
-  flexibleCategory('Sachets', [
-    ['Flat Sachets', ['3-Side Seal Sachet', '4-Side Seal Sachet']],
-    ['Stick Packs', ['Powder Stick Pack', 'Liquid Stick Pack', 'Granule Stick Pack', 'Single-Serve Stick Pack']],
-    ['Pillow Sachets', ['Center-Seal Sachet', 'Fin-Seal Sachet']],
-    ['Spouted Sachets', ['Liquid Spout Sachet', 'Single-Serve Spout Sachet']],
-    ['Specialty Sachets', ['Sample Sachet', 'Trial Sachet', 'Twin Sachet', 'Dual-Chamber Sachet']],
-  ]),
-  flexibleCategory('Film & Rollstock', [
-    ['Flexible Packaging Films', ['PE Film', 'PP Film', 'BOPP Film', 'CPP Film', 'PET Film', 'BOPET Film', 'Nylon / PA Film', 'Paper Film']],
-    ['Printed Rollstock', ['Printed Film', 'Printed Laminate', 'Preformed Rollstock']],
-    ['Laminated Films', ['2-Layer Laminate', '3-Layer Laminate', 'Foil Laminate', 'Metallized Laminate', 'High-Barrier Laminate']],
-    ['Specialty Films', ['Retort Film', 'Shrink Film', 'Stretch Film', 'Barrier Film', 'Peelable Film', 'Recyclable / Mono-Material Film']],
-  ]),
-  flexibleCategory('Wraps & Wrappers', [
-    ['Flow Wrap', ['Horizontal Flow Wrap', 'Vertical Flow Wrap', 'Pillow Flow Wrap']],
-    ['Overwrap', ['Twist Wrap', 'Fin-Seal Overwrap', 'Folded Overwrap']],
-    ['Stretch Wrap', ['Hand Stretch Wrap', 'Machine Stretch Wrap']],
-    ['Shrink Wrap', ['Shrink Film', 'Shrink Bag', 'Shrink Sleeve']],
-  ]),
-  flexibleCategory('Specialty Flexible Packaging', [
-    ['Vacuum Packaging', ['Vacuum Pouch', 'Vacuum Bag', 'Vacuum Skin Pack']],
-    ['Retort Packaging', ['Retort Pouch', 'Retort Bag', 'Retort Sachet']],
-    ['Skin Packaging', ['Vacuum Skin Packaging', 'Skin Film', 'Skin Pack']],
-    ['Blister Packaging', ['Flexible Blister', 'Peelable Blister', 'Formed Film Blister']],
-    ['Strip Packaging', ['Strip Pack', 'Double Strip Pack', 'Pharmaceutical Strip Pack']],
-  ]),
-  flexibleCategory('Flexible Liquid Packaging', [
-    ['Liquid Pouches', ['Flat Liquid Pouch', 'Stand-Up Liquid Pouch', 'Spouted Liquid Pouch']],
-    ['Liquid Sachets', ['Single-Serve Sachet', 'Sauce Sachet', 'Beverage Sachet']],
-    ['Refill Pouches', ['Spouted Refill Pouch', 'Stand-Up Refill Pouch', 'Large-Format Refill Pouch']],
-  ]),
-  flexibleCategory('Flexible Packaging by Application', [
-    ['Food Packaging', ['Snack Packaging', 'Coffee Packaging', 'Tea Packaging', 'Spice Packaging', 'Dry Fruit Packaging', 'Frozen Food Packaging', 'Bakery Packaging', 'Confectionery Packaging', 'Pet Food Packaging']],
-    ['Beverage Packaging', ['Juice Pouch', 'Water Pouch', 'Beverage Sachet', 'Drink Pouch']],
-    ['Pharmaceutical Packaging', ['Medicine Sachet', 'Strip Pack', 'Powder Sachet', 'Medical Pouch', 'Sterile Pouch']],
-    ['Personal Care Packaging', ['Shampoo Sachet', 'Cosmetic Sachet', 'Lotion Pouch', 'Face Mask Pouch', 'Refill Pouch']],
-    ['Household Packaging', ['Detergent Pouch', 'Cleaning Product Pouch', 'Garbage Bag', 'Laundry Bag', 'Refill Pouch']],
-    ['Industrial Packaging', ['Heavy-Duty Bag', 'Liner Bag', 'Bulk Bag', 'FIBC', 'Industrial Liner', 'Chemical Bag']],
-  ]),
-];
-
-const flexibleImage = (slug: string, title: string) => { const film = /film|rollstock|wrap|laminate/i.test(title); const artwork = film ? `<ellipse cx="440" cy="430" rx="185" ry="135" fill="#d6a36f" stroke="#173b35" stroke-width="14"/><ellipse cx="440" cy="430" rx="62" ry="46" fill="#fffaf0" stroke="#173b35" stroke-width="14"/><path d="M440 295h370q90 0 90 90v90q0 90-90 90H440" fill="#b9dccc" stroke="#173b35" stroke-width="14"/>` : `<path d="M415 170h370l50 580H365z" fill="#d6a36f" stroke="#173b35" stroke-width="16"/><path d="M435 230h330" stroke="#fffaf0" stroke-width="26"/><path d="M470 330h260v210H470z" fill="#fffaf0"/>`; return svgToDataUri(`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900"><rect width="1200" height="900" fill="#e8f4ed"/>${artwork}<text x="600" y="700" text-anchor="middle" font-family="Arial" font-size="32" font-weight="700" fill="#173b35">FLEXIBLE</text><text x="600" y="780" text-anchor="middle" font-family="Arial" font-size="34" font-weight="700" fill="#173b35">${escapeSvgText(title)}</text></svg>`); };
-const FLEXIBLE_PACKAGING_NODES: CatalogNode[] = FLEXIBLE_PACKAGING_DEFINITIONS.map((category) => ({ id: category.id, slug: category.slug, title: category.title, subtitle: category.subtitle, description: category.description, image: flexibleImage(category.slug, category.title), images: [1, 2, 3].map((index) => ({ key: `${category.slug}-${index}`, url: flexibleImage(`${category.slug}-${index}`, category.title) })), children: category.subcategories.map((subcategory) => ({ id: subcategory.id, slug: subcategory.slug, title: subcategory.title, subtitle: subcategory.subtitle, description: subcategory.description, image: flexibleImage(subcategory.slug, subcategory.title), images: [1, 2, 3].map((index) => ({ key: `${subcategory.slug}-${index}`, url: flexibleImage(`${subcategory.slug}-${index}`, subcategory.title) })), children: subcategory.products.map((product) => ({ id: product.id, slug: product.slug, title: product.title, subtitle: product.subtitle, description: product.description, image: flexibleImage(product.slug, product.title), images: [1, 2, 3].map((index) => ({ key: `${product.slug}-${index}`, url: flexibleImage(`${product.slug}-${index}`, product.title) })), features: product.features, benefits: product.features, applications: [product.useCase], specifications: [{ label: 'Material', value: 'Custom barrier film or laminate' }, { label: 'Format', value: product.subcategory }, { label: 'Print', value: 'Custom printed to specification' }] })) })) }));
 
 export type LabelProductDefinition = BoxProductDefinition & { rootCategory: 'Labels & Stickers'; category: string; subcategory: string; parentId: string; categoryId: string; subcategoryId: string };
 type LabelSubcategoryDefinition = { id: string; slug: string; title: string; subtitle: string; description: string; products: LabelProductDefinition[] };
@@ -484,15 +402,6 @@ export const CATALOG_ROOT: CatalogNode[] = [
       },
     ], */
   },
-  {
-    id: "flexible-packaging",
-    slug: "flexible-packaging",
-    title: "Flexible Packaging",
-    subtitle: "Pouches, films, and wraps",
-    image: images.pouch,
-    description:
-      "Lightweight flexible formats designed for barrier performance, convenience, shelf visibility, and efficient material use.",
-    children: FLEXIBLE_PACKAGING_NODES,
     /* Superseded starter flexible nodes retained below for historical context.
       {
         slug: "pouches",
@@ -579,7 +488,6 @@ export const CATALOG_ROOT: CatalogNode[] = [
         ],
       },
     ], */
-  },
   {
     id: "labels-stickers",
     slug: "labels-stickers",
@@ -672,7 +580,7 @@ export const CATALOG_ROOT: CatalogNode[] = [
   {
     id: "retail-ecommerce-supplies",
     slug: "retail-ecommerce-supplies",
-    title: "Retail & E-Commerce Supplies",
+    title: "Retail & E-Commerce",
     subtitle: "Packing station essentials",
     image: images.ecommerce,
     description:

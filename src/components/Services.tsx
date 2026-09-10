@@ -57,7 +57,7 @@ const DISCIPLINES: ServiceDiscipline[] = [
     icon: <Package className="w-6 h-6 text-[#FF9933]" />,
     bulletItems: [
       'Rigid gift boxes, folding cartons & corrugated mailers',
-      'Custom standup pouches and kraft paper bags',
+      'Custom kraft paper bags',
       'Custom-cut foam inserts for delicate items',
       'Flat-packed or pre-assembled delivery',
     ],

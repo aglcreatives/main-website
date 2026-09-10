@@ -7,7 +7,7 @@ const INITIAL_FORM: QuoteFormState = { name: '', email: '', company: '', quantit
 const FAQS = [
   ['What information should I provide for a quote?', 'Share your product type, preferred packaging format, dimensions if known, expected quantity, artwork status and delivery timeline. A rough brief is enough to start the conversation.'],
   ['Can I request custom packaging?', 'Yes. We can help with custom box sizing, structural dielines, artwork setup and production for packaging shaped around your product.'],
-  ['What packaging materials do you offer?', 'Our projects include folding carton board, rigid box materials, corrugated board, kraft paper, pouches, bags and protective inserts. We will recommend options based on the product and finish you need.'],
+  ['What packaging materials do you offer?', 'Our projects include folding carton board, rigid box materials, corrugated board, kraft paper, labels and protective inserts. We will recommend options based on the product and finish you need.'],
   ['What are the minimum order quantities?', 'Minimum quantities depend on the format, material, printing method and finish. Include your expected quantity in the form and we’ll advise on the most practical production route.'],
   ['How long does it take to receive a quote?', 'Our production team aims to respond within 24 business hours. More detailed or custom briefs may need a follow-up before we can provide an accurate quote.'],
   ['Can I request samples or help with specifications?', 'Yes. We can arrange plain white samples for size fitting and help you work through dielines, material weight, print finishes and other specifications before production.'],

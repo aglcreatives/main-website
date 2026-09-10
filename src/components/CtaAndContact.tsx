@@ -493,7 +493,6 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                           >
                             <option value="Boxes">Rigid & Folding Boxes</option>
                             <option value="E-commerce Mailers">E-Commerce Mailers</option>
-                            <option value="Pouches">Flexible Pouches & Bags</option>
                             <option value="Labels">Labels & Stickers</option>
                             <option value="Corporate Print">Corporate Print Suites</option>
                             <option value="Other">Other Bespoke Format</option>

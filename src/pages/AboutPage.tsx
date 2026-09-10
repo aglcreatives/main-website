@@ -55,7 +55,7 @@ export const AboutPage: React.FC = () => {
             <h2 className="font-heading mt-3 text-3xl font-bold text-[#0A1930] sm:text-4xl">A hands-on partner for packaging that works.</h2>
             <div className="mt-5 space-y-4 text-sm leading-relaxed text-[#161B22]/75 sm:text-base">
               <p>AGL Creatives is a printing and packaging solutions company that helps businesses turn product requirements into packaging that is ready for the shelf, the shipping box and the customer’s hands.</p>
-              <p>We work across folding cartons, rigid boxes, corrugated mailers, flexible packs, bags, labels and protective inserts. That range lets us match the structure, material, print finish and level of protection to the product rather than forcing every brief into one format.</p>
+              <p>We work across folding cartons, rigid boxes, corrugated mailers, labels and protective inserts. That range lets us match the structure, material, print finish and level of protection to the product rather than forcing every brief into one format.</p>
               <p>Our approach stays practical and collaborative: begin with the brief, clarify the details that affect production, and guide the project through dielines, artwork, sampling and final packaging. The aim is a pack that supports your brand while making packing, presentation and delivery easier.</p>
             </div>
             <Link to="/request-quote" className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#FF9933] px-5 py-3 text-sm font-bold text-[#0A1930] shadow-[0_5px_16px_rgba(255,153,51,0.3)] transition-all hover:-translate-y-0.5 hover:bg-[#FFB35C]">Discuss your project <ArrowRight className="h-4 w-4" /></Link>
@@ -70,7 +70,7 @@ export const AboutPage: React.FC = () => {
             <h2 className="font-heading mt-3 text-3xl font-bold text-[#0A1930] sm:text-4xl">From the first line to the final fold.</h2>
             <div className="mt-4 space-y-3 text-sm leading-relaxed text-[#161B22]/70 sm:text-base">
               <p>Our packaging range starts with boxes: folding cartons for retail presentation, rigid boxes for gifting and premium products, and corrugated or mailer boxes for protective shipping and e-commerce orders. We also create display, specialty and food-service formats where the product or retail setting calls for a more specific structure.</p>
-              <p>For products that need a lighter or more adaptable format, we offer flexible packaging such as pouches, films and wraps, alongside labels and stickers for product identity, information and promotional use. Each can be specified around the surface, barrier, closure, print and finishing needs of the application.</p>
+              <p>We also create labels and stickers for product identity, information and promotional use. Each can be specified around the surface, print and finishing needs of the application.</p>
               <p>Beyond the primary pack, our retail and e-commerce supplies support the complete delivery experience with shipping protection, packing materials and unboxing details. Together, these solutions help brands prepare products for presentation, fulfillment and distribution from one packaging partner.</p>
             </div>
           </div>
