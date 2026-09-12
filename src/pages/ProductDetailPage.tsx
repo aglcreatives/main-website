@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'motion/react';
+import React, { useState, useEffect, useMemo, useRef } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "motion/react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -28,7 +28,7 @@ import {
   Award,
   FileCheck,
   MessageSquare,
-} from 'lucide-react';
+} from "lucide-react";
 import {
   PRODUCTS,
   Product,
@@ -38,7 +38,7 @@ import {
   CoatingOption,
   FoilOption,
   ProductCategory,
-} from '../data/products';
+} from "../data/products";
 
 interface ProductDetailPageProps {
   onOpenQuoteModal: () => void;
@@ -46,30 +46,32 @@ interface ProductDetailPageProps {
 
 // Icon renderer helper for specification cards
 const renderSpecIcon = (iconName: string) => {
-  const props = { className: 'w-5 h-5 text-[#FF9933]' };
+  const props = { className: "w-5 h-5 text-[#FF9933]" };
   switch (iconName) {
-    case 'Scissors':
+    case "Scissors":
       return <Scissors {...props} />;
-    case 'Printer':
+    case "Printer":
       return <Printer {...props} />;
-    case 'ShieldCheck':
+    case "ShieldCheck":
       return <ShieldCheck {...props} />;
-    case 'Leaf':
+    case "Leaf":
       return <Leaf {...props} />;
-    case 'Box':
+    case "Box":
       return <Box {...props} />;
-    case 'Layers':
+    case "Layers":
       return <Layers {...props} />;
-    case 'Sparkles':
+    case "Sparkles":
       return <Sparkles {...props} />;
-    case 'Clock':
+    case "Clock":
       return <Clock {...props} />;
     default:
       return <ShieldCheck {...props} />;
   }
 };
 
-export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ onOpenQuoteModal }) => {
+export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
+  onOpenQuoteModal,
+}) => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
 
@@ -89,20 +91,24 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ onOpenQuot
 
   // Configurator state
   const [selectedPrinting, setSelectedPrinting] = useState<PrintingOption>(
-    product.printingOptions[0]
+    product.printingOptions[0],
   );
-  const [selectedSize, setSelectedSize] = useState<ProductSize>(product.sizes[0]);
+  const [selectedSize, setSelectedSize] = useState<ProductSize>(
+    product.sizes[0],
+  );
   const [selectedQuantity, setSelectedQuantity] = useState<number>(
-    product.quantityTiers[0]?.quantity || 500
+    product.quantityTiers[0]?.quantity || 500,
   );
   const [selectedMaterial, setSelectedMaterial] = useState<ProductMaterial>(
-    product.materials[0]
+    product.materials[0],
   );
   const [selectedCoating, setSelectedCoating] = useState<CoatingOption>(
-    product.coatings[0]
+    product.coatings[0],
   );
   const [isEmbossed, setIsEmbossed] = useState<boolean>(false);
-  const [selectedFoil, setSelectedFoil] = useState<FoilOption>(product.foilOptions[0]);
+  const [selectedFoil, setSelectedFoil] = useState<FoilOption>(
+    product.foilOptions[0],
+  );
 
   // Design file upload state
   const [uploadedFile, setUploadedFile] = useState<{
@@ -138,9 +144,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ onOpenQuot
     return (
       product?.galleryImages || [
         {
-          url: product?.mainImageUrl || '',
-          alt: product?.name || '',
-          caption: 'Primary product view',
+          url: product?.mainImageUrl || "",
+          alt: product?.name || "",
+          caption: "Primary product view",
         },
       ]
     );
@@ -150,10 +156,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ onOpenQuot
   const productFaqs = useMemo(() => {
     if (!product) return [];
     const list = product.faqs ? [...product.faqs] : [];
-    if (!list.some((f) => f.question.toLowerCase().includes('exact pricing'))) {
+    if (!list.some((f) => f.question.toLowerCase().includes("exact pricing"))) {
       list.push({
-        question: 'How do I get exact pricing?',
-        answer: 'Submit your specification via WhatsApp or email and our team responds with pricing within 24 hours.',
+        question: "How do I get exact pricing?",
+        answer:
+          "Submit your specification via WhatsApp or email and our team responds with pricing within 24 hours.",
       });
     }
     return list;
@@ -175,7 +182,10 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ onOpenQuot
     if (sameCategory.length >= 3) {
       return sameCategory.slice(0, 4);
     }
-    return [...sameCategory, ...others.filter((p) => p.category !== product.category)].slice(0, 4);
+    return [
+      ...sameCategory,
+      ...others.filter((p) => p.category !== product.category),
+    ].slice(0, 4);
   }, [product]);
 
   // Share handlers
@@ -187,7 +197,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ onOpenQuot
 
   // Generate WhatsApp prefilled message with full specification summary (asking for pricing)
   const whatsappUrl = useMemo(() => {
-    const embossingText = isEmbossed ? 'Yes (Tactile Relief)' : 'None';
+    const embossingText = isEmbossed ? "Yes (Tactile Relief)" : "None";
     const message =
       `Hi AGL Creatives, I'd like a quote for: ${product.name} (SKU: ${product.sku})\n\n` +
       `📦 Product: ${product.name}\n` +
@@ -198,7 +208,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ onOpenQuot
       `✨ Coating: ${selectedCoating?.name}\n` +
       `⚜️ Embossing: ${embossingText}\n` +
       `🌟 Foiling: ${selectedFoil?.name}\n` +
-      `${uploadedFile ? `📁 Artwork File: ${uploadedFile.name} (${uploadedFile.size})\n` : ''}` +
+      `${uploadedFile ? `📁 Artwork File: ${uploadedFile.name} (${uploadedFile.size})\n` : ""}` +
       `\n🌐 Link: ${window.location.href}\n\n` +
       `Please share pricing and lead time for this specification.`;
 
@@ -218,7 +228,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ onOpenQuot
   // Generate Email prefilled mailto link with full specification summary (asking for pricing)
   const emailUrl = useMemo(() => {
     const subject = `Quote Request: ${product.name} (${selectedQuantity.toLocaleString()} pcs) - AGL Creatives`;
-    const embossingText = isEmbossed ? 'Yes (Tactile Relief)' : 'None';
+    const embossingText = isEmbossed ? "Yes (Tactile Relief)" : "None";
     const body =
       `Hello AGL Creatives Team,\n\n` +
       `I would like to request custom pricing and production lead time for the following packaging specification:\n\n` +
@@ -230,12 +240,12 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ onOpenQuot
       `Coating: ${selectedCoating?.name}\n` +
       `Embossing: ${embossingText}\n` +
       `Foiling: ${selectedFoil?.name}\n` +
-      `${uploadedFile ? `Artwork Reference: ${uploadedFile.name} (${uploadedFile.size})\n` : ''}` +
+      `${uploadedFile ? `Artwork Reference: ${uploadedFile.name} (${uploadedFile.size})\n` : ""}` +
       `Product Link: ${window.location.href}\n\n` +
       `Please share pricing and lead time for this configuration.\n\n` +
       `Best regards,`;
 
-    return `mailto:hello@aglcreatives.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    return `mailto:hello@aglcreatives.in?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }, [
     product,
     selectedSize,
@@ -276,7 +286,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ onOpenQuot
   const removeFile = () => {
     setUploadedFile(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      fileInputRef.current.value = "";
     }
   };
 
@@ -296,7 +306,10 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ onOpenQuot
               Home
             </Link>
             <span>/</span>
-            <Link to="/products" className="hover:text-[#FF9933] transition-colors">
+            <Link
+              to="/products"
+              className="hover:text-[#FF9933] transition-colors"
+            >
               Products
             </Link>
             <span>/</span>
@@ -319,27 +332,27 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ onOpenQuot
         {/* ========================================================================= */}
         <div className="">
           {/* Header: Title, SKU & Tag */}
-            <div>
-              <div className="flex items-center gap-2 mb-2 flex-wrap">
-                <span className="px-2.5 py-0.5 rounded-full bg-[#0A1930] text-[#FAF7F2] text-[10px] font-mono font-bold tracking-wider uppercase">
-                  {product.categoryTag}
-                </span>
-                <span className="px-2.5 py-0.5 rounded-full bg-[#FF9933]/15 text-[#D97706] text-[10px] font-mono font-bold">
-                  SKU: {product.sku}
-                </span>
-                <span className="text-xs font-mono text-[#12295A]/60 ml-auto">
-                  MOQ: {product.minQuantity.toLocaleString()} pcs
-                </span>
-              </div>
-
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-display font-bold text-[#0A1930] tracking-tight">
-                {product.name}
-              </h1>
-
-              <p className="mt-2 text-sm text-[#12295A]/80 leading-relaxed">
-                {product.shortDescription}
-              </p>
+          <div>
+            <div className="flex items-center gap-2 mb-2 flex-wrap">
+              <span className="px-2.5 py-0.5 rounded-full bg-[#0A1930] text-[#FAF7F2] text-[10px] font-mono font-bold tracking-wider uppercase">
+                {product.categoryTag}
+              </span>
+              <span className="px-2.5 py-0.5 rounded-full bg-[#FF9933]/15 text-[#D97706] text-[10px] font-mono font-bold">
+                SKU: {product.sku}
+              </span>
+              <span className="text-xs font-mono text-[#12295A]/60 ml-auto">
+                MOQ: {product.minQuantity.toLocaleString()} pcs
+              </span>
             </div>
+
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-display font-bold text-[#0A1930] tracking-tight">
+              {product.name}
+            </h1>
+
+            <p className="mt-2 text-sm text-[#12295A]/80 leading-relaxed">
+              {product.shortDescription}
+            </p>
+          </div>
           {/* ----------------------------------------------------------------------- */}
           {/* LEFT COLUMN: IMAGE GALLERY & SHARE TOOLS */}
           {/* ----------------------------------------------------------------------- */}
@@ -385,7 +398,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ onOpenQuot
               {/* Image Caption Pill Overlay */}
               <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between pointer-events-none">
                 <span className="px-3 py-1 rounded-full bg-[#0A1930]/80 backdrop-blur-sm text-white text-[11px] font-mono">
-                  {gallery[activeImageIndex]?.caption || 'Packaging Angle'}
+                  {gallery[activeImageIndex]?.caption || "Packaging Angle"}
                 </span>
                 <span className="px-2.5 py-1 rounded-full bg-[#0A1930]/80 backdrop-blur-sm text-[#FF9933] text-[11px] font-mono font-bold">
                   {activeImageIndex + 1} / {gallery.length}
@@ -404,13 +417,15 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ onOpenQuot
                     aria-label={`View image ${idx + 1}: ${img.caption || img.alt || product.name}`}
                     className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all p-0.5 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF9933] ${
                       activeImageIndex === idx
-                        ? 'border-[#FF9933] shadow-md ring-2 ring-[#FF9933]/20 scale-[1.02]'
-                        : 'border-[#0A1930]/10 hover:border-[#0A1930]/40 opacity-70 hover:opacity-100'
+                        ? "border-[#FF9933] shadow-md ring-2 ring-[#FF9933]/20 scale-[1.02]"
+                        : "border-[#0A1930]/10 hover:border-[#0A1930]/40 opacity-70 hover:opacity-100"
                     }`}
                   >
                     <img
                       src={img.url}
-                      alt={img.alt || `${product.name} gallery image ${idx + 1}`}
+                      alt={
+                        img.alt || `${product.name} gallery image ${idx + 1}`
+                      }
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover rounded-lg"
                     />
@@ -430,7 +445,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ onOpenQuot
                 {/* WhatsApp Share */}
                 <a
                   href={`https://wa.me/?text=${encodeURIComponent(
-                    `Check out this custom packaging format: ${product.name} on AGL Creatives:\n${window.location.href}`
+                    `Check out this custom packaging format: ${product.name} on AGL Creatives:\n${window.location.href}`,
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -443,9 +458,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ onOpenQuot
                 {/* Email Share */}
                 <a
                   href={`mailto:?subject=${encodeURIComponent(
-                    `Packaging Review: ${product.name}`
+                    `Packaging Review: ${product.name}`,
                   )}&body=${encodeURIComponent(
-                    `I thought you might be interested in this packaging structure from AGL Creatives:\n\n${product.name}\n${window.location.href}`
+                    `I thought you might be interested in this packaging structure from AGL Creatives:\n\n${product.name}\n${window.location.href}`,
                   )}`}
                   aria-label="Share product specification via Email"
                   className="px-3 py-1.5 rounded-lg bg-[#2F6FED]/10 hover:bg-[#2F6FED]/20 text-[#2F6FED] font-medium transition-colors flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2F6FED]"
@@ -458,13 +473,19 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ onOpenQuot
                 <button
                   type="button"
                   onClick={handleCopyLink}
-                  aria-label={copiedToast ? 'Product link copied to clipboard' : 'Copy product link to clipboard'}
+                  aria-label={
+                    copiedToast
+                      ? "Product link copied to clipboard"
+                      : "Copy product link to clipboard"
+                  }
                   className="px-3 py-1.5 rounded-lg bg-[#0A1930]/5 hover:bg-[#0A1930]/10 text-[#0A1930] font-medium transition-colors flex items-center gap-1.5 relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF9933]"
                 >
                   {copiedToast ? (
                     <>
                       <Check className="w-3 h-3 text-emerald-600" />
-                      <span className="text-emerald-600 font-bold">Copied!</span>
+                      <span className="text-emerald-600 font-bold">
+                        Copied!
+                      </span>
                     </>
                   ) : (
                     <>
@@ -481,20 +502,27 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ onOpenQuot
               <div className="p-3 rounded-xl bg-white border border-[#0A1930]/10 flex items-start gap-2.5">
                 <ShieldCheck className="w-5 h-5 text-[#2F6FED] shrink-0 mt-0.5" />
                 <div>
-                  <div className="text-xs font-bold text-[#0A1930]">ISO 9001 Certified</div>
-                  <div className="text-[11px] text-[#12295A]/70">G7 Master Color Accuracy</div>
+                  <div className="text-xs font-bold text-[#0A1930]">
+                    ISO 9001 Certified
+                  </div>
+                  <div className="text-[11px] text-[#12295A]/70">
+                    G7 Master Color Accuracy
+                  </div>
                 </div>
               </div>
               <div className="p-3 rounded-xl bg-white border border-[#0A1930]/10 flex items-start gap-2.5">
                 <Clock className="w-5 h-5 text-[#FF9933] shrink-0 mt-0.5" />
                 <div>
-                  <div className="text-xs font-bold text-[#0A1930]">{product.leadTime}</div>
-                  <div className="text-[11px] text-[#12295A]/70">Standard Production Lead</div>
+                  <div className="text-xs font-bold text-[#0A1930]">
+                    {product.leadTime}
+                  </div>
+                  <div className="text-[11px] text-[#12295A]/70">
+                    Standard Production Lead
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-
         </div>
 
         {/* ========================================================================= */}
@@ -516,7 +544,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ onOpenQuot
                   <span>Production Guarantee</span>
                 </div>
                 <p className="text-[#12295A]/70 leading-relaxed">
-                  Every run undergoes spectrophotometer color verification, die-crease elasticity testing, and 100% manual QC inspection prior to pallet wrapping.
+                  Every run undergoes spectrophotometer color verification,
+                  die-crease elasticity testing, and 100% manual QC inspection
+                  prior to pallet wrapping.
                 </p>
               </div>
             </div>
@@ -548,7 +578,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ onOpenQuot
                   <div className="w-10 h-10 rounded-xl bg-[#0A1930]/5 flex items-center justify-center">
                     {renderSpecIcon(spec.iconName)}
                   </div>
-                  <h3 className="text-sm font-bold text-[#0A1930]">{spec.title}</h3>
+                  <h3 className="text-sm font-bold text-[#0A1930]">
+                    {spec.title}
+                  </h3>
                   <p className="text-xs text-[#12295A]/70 leading-relaxed">
                     {spec.description}
                   </p>
@@ -586,7 +618,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ onOpenQuot
                       <span>{faq.question}</span>
                       <ChevronDown
                         className={`w-4 h-4 text-[#0A1930] shrink-0 transition-transform duration-200 ${
-                          isOpen ? 'rotate-180 text-[#FF9933]' : ''
+                          isOpen ? "rotate-180 text-[#FF9933]" : ""
                         }`}
                       />
                     </button>
@@ -598,7 +630,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ onOpenQuot
                           role="region"
                           aria-label={faq.question}
                           initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
+                          animate={{ height: "auto", opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
                           transition={{ duration: 0.2 }}
                           className="overflow-hidden"
@@ -667,7 +699,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ onOpenQuot
 
                     <div className="mt-4 pt-3 border-t border-[#0A1930]/5 flex items-center justify-between">
                       <div>
-                        <span className="text-[10px] font-mono text-slate-400 block">Pricing</span>
+                        <span className="text-[10px] font-mono text-slate-400 block">
+                          Pricing
+                        </span>
                         <span className="text-xs font-mono font-bold text-[#0A1930]">
                           Custom Quote • MOQ {rel.minQuantity.toLocaleString()}
                         </span>

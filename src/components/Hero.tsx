@@ -16,13 +16,11 @@ const SLIDES = [
 export const Hero: React.FC<HeroProps> = ({ onOpenQuoteModal }) => {
   const navigate = useNavigate();
   const [activeSlide, setActiveSlide] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    if (isPaused) return;
-    const timer = window.setInterval(() => setActiveSlide((current) => (current + 1) % SLIDES.length), 2000);
+    const timer = window.setInterval(() => setActiveSlide((current) => (current + 1) % SLIDES.length), 5000);
     return () => window.clearInterval(timer);
-  }, [isPaused]);
+  }, []);
 
   const slide = SLIDES[activeSlide];
   return (
@@ -34,7 +32,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenQuoteModal }) => {
           <div className="absolute inset-0 bg-gradient-to-r from-[#081426]/72 via-[#081426]/38 to-transparent" aria-hidden="true" />
         </motion.div>
       </AnimatePresence>
-      <div className="relative z-10 mx-auto flex h-[100dvh] min-h-[100svh] max-w-7xl items-center px-4 pb-28 pt-32 sm:px-6 sm:pt-36 lg:px-8" onMouseEnter={() => setIsPaused(true)} onMouseLeave={() => setIsPaused(false)}>
+      <div className="relative z-10 mx-auto flex h-[100dvh] min-h-[100svh] max-w-7xl items-center px-4 pb-28 pt-32 sm:px-6 sm:pt-36 lg:px-8">
         <div className="max-w-2xl text-white">
           <motion.p key={`${slide.eyebrow}-eyebrow`} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mb-5 inline-flex items-center border border-white/30 bg-white/10 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.16em] backdrop-blur-sm">{slide.eyebrow}</motion.p>
           <motion.h1 key={`${slide.title}-title`} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }} className="font-heading text-5xl font-bold leading-[1.03] sm:text-6xl lg:text-7xl">{slide.title}</motion.h1>

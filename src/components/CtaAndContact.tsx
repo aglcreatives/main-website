@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { readApiResult } from '../lib/api';
-import { motion, AnimatePresence } from 'motion/react';
+import React, { useState } from "react";
+import { readApiResult } from "../lib/api";
+import { motion, AnimatePresence } from "motion/react";
 import {
   ArrowRight,
   Phone,
@@ -17,7 +17,7 @@ import {
   Twitter,
   ChevronDown,
   MessageCircle,
-} from 'lucide-react';
+} from "lucide-react";
 
 interface CtaAndContactProps {
   onOpenQuoteModal: () => void;
@@ -32,22 +32,28 @@ interface FormData {
 }
 
 const INITIAL_FORM: FormData = {
-  fullName: '',
-  email: '',
-  phone: '',
-  projectType: 'Boxes',
-  message: '',
+  fullName: "",
+  email: "",
+  phone: "",
+  projectType: "Boxes",
+  message: "",
 };
 
-export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }) => {
+export const CtaAndContact: React.FC<CtaAndContactProps> = ({
+  onOpenQuoteModal,
+}) => {
   const [formData, setFormData] = useState<FormData>(INITIAL_FORM);
   const [focusedField, setFocusedField] = useState<string | null>(null);
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [submissionError, setSubmissionError] = useState('');
+  const [submissionError, setSubmissionError] = useState("");
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -62,13 +68,14 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
 
   const validate = (): boolean => {
     const errs: Record<string, string> = {};
-    if (!formData.fullName.trim()) errs.fullName = 'Please enter your name';
+    if (!formData.fullName.trim()) errs.fullName = "Please enter your name";
     if (!formData.email.trim()) {
-      errs.email = 'Please enter your email';
+      errs.email = "Please enter your email";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      errs.email = 'Please enter a valid email address';
+      errs.email = "Please enter a valid email address";
     }
-    if (!formData.message.trim()) errs.message = 'Please provide project details';
+    if (!formData.message.trim())
+      errs.message = "Please provide project details";
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -77,33 +84,36 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
     e.preventDefault();
     if (!validate()) return;
 
-    setStatus('loading');
-    setSubmissionError('');
+    setStatus("loading");
+    setSubmissionError("");
     try {
-      const response = await fetch('/api/inquiries/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/inquiries/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
       const result = await readApiResult(response);
-      if (!response.ok) throw new Error(result.message || 'Unable to send your inquiry.');
-      setStatus('success');
+      if (!response.ok)
+        throw new Error(result.message || "Unable to send your inquiry.");
+      setStatus("success");
     } catch (error) {
-      setStatus('error');
-      setSubmissionError(error instanceof Error ? error.message : 'Unable to send your inquiry.');
+      setStatus("error");
+      setSubmissionError(
+        error instanceof Error ? error.message : "Unable to send your inquiry.",
+      );
     }
   };
 
   const handleReset = () => {
     setFormData(INITIAL_FORM);
-    setStatus('idle');
+    setStatus("idle");
     setErrors({});
   };
 
   const scrollToContact = () => {
-    const el = document.getElementById('contact-form-section');
+    const el = document.getElementById("contact-form-section");
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
+      el.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -130,8 +140,23 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
               patternTransform="rotate(45 0 0)"
               patternUnits="userSpaceOnUse"
             >
-              <line x1="0" y1="0" x2="0" y2="40" stroke="#0A1930" strokeWidth="1.5" strokeDasharray="3 3" />
-              <line x1="20" y1="0" x2="20" y2="40" stroke="#0A1930" strokeWidth="1" />
+              <line
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="40"
+                stroke="#0A1930"
+                strokeWidth="1.5"
+                strokeDasharray="3 3"
+              />
+              <line
+                x1="20"
+                y1="0"
+                x2="20"
+                y2="40"
+                stroke="#0A1930"
+                strokeWidth="1"
+              />
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#diagonal-fold-lines)" />
@@ -152,7 +177,9 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
           </h2>
 
           <p className="text-base sm:text-lg text-[#0A1930]/85 font-medium mt-4 max-w-2xl mx-auto leading-relaxed">
-            From bespoke structural prototyping to high-volume luxury print runs, let&apos;s engineer unboxing experiences your customers will never forget.
+            From bespoke structural prototyping to high-volume luxury print
+            runs, let&apos;s engineer unboxing experiences your customers will
+            never forget.
           </p>
 
           <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -185,9 +212,11 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
         className="py-24 sm:py-32 bg-[#FAF7F2] text-[#161B22] relative overflow-hidden"
         aria-label="Contact AGL Creatives"
       >
-        <div id="contact-form-section" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div
+          id="contact-form-section"
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        >
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-            
             {/* LEFT COLUMN: Company Information & Channels */}
             <div className="lg:col-span-5 flex flex-col justify-between">
               <div>
@@ -201,7 +230,9 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                 </h2>
 
                 <p className="text-sm sm:text-base text-[#161B22]/75 mt-4 leading-relaxed max-w-md">
-                  As a printing and packaging solution company, we help with box structures, materials, printing, and production from first brief to dispatch.
+                  As a printing and packaging solution company, we help with box
+                  structures, materials, printing, and production from first
+                  brief to dispatch.
                 </p>
 
                 {/* Contact Items List */}
@@ -215,11 +246,15 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                       <Phone className="w-5 h-5" />
                     </div>
                     <div>
-                      <div className="text-xs font-mono text-[#12295A]/60 uppercase">Contact Number</div>
+                      <div className="text-xs font-mono text-[#12295A]/60 uppercase">
+                        Contact Number
+                      </div>
                       <div className="text-base font-bold text-[#0A1930] group-hover:text-[#2F6FED] transition-colors">
                         +91 7982214262
                       </div>
-                      <div className="text-xs text-[#161B22]/60 mt-0.5">Mon–Sat, 10:00 AM – 6:00 PM IST</div>
+                      <div className="text-xs text-[#161B22]/60 mt-0.5">
+                        Mon–Sat, 10:00 AM – 6:00 PM IST
+                      </div>
                     </div>
                   </a>
 
@@ -234,11 +269,15 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                       <MessageCircle className="w-5 h-5" />
                     </div>
                     <div>
-                      <div className="text-xs font-mono text-[#12295A]/60 uppercase">WhatsApp Instant Support</div>
+                      <div className="text-xs font-mono text-[#12295A]/60 uppercase">
+                        WhatsApp Instant Support
+                      </div>
                       <div className="text-base font-bold text-[#0A1930] group-hover:text-[#2F6FED] transition-colors">
                         +91 7982214262
                       </div>
-                      <div className="text-xs text-[#161B22]/60 mt-0.5">Direct chat for specs &amp; fast quote estimates</div>
+                      <div className="text-xs text-[#161B22]/60 mt-0.5">
+                        Direct chat for specs &amp; fast quote estimates
+                      </div>
                     </div>
                   </a>
 
@@ -248,10 +287,24 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                       <Mail className="w-5 h-5" />
                     </div>
                     <div>
-                      <div className="text-xs font-mono text-[#12295A]/60 uppercase">Production & Inquiries</div>
-                      <a href="mailto:support@aglcreatives.com" className="block text-base font-bold text-[#0A1930] hover:text-[#2F6FED] transition-colors">support@aglcreatives.com</a>
-                      <a href="mailto:hr@aglcreatives.in" className="block text-base font-bold text-[#0A1930] hover:text-[#2F6FED] transition-colors">hr@aglcreatives.in</a>
-                      <div className="text-xs text-[#161B22]/60 mt-0.5">Quotes returned within 24 business hours</div>
+                      <div className="text-xs font-mono text-[#12295A]/60 uppercase">
+                        Production & Inquiries
+                      </div>
+                      <a
+                        href="mailto:support@aglcreatives.in"
+                        className="block text-base font-bold text-[#0A1930] hover:text-[#2F6FED] transition-colors"
+                      >
+                        support@aglcreatives.in
+                      </a>
+                      <a
+                        href="mailto:hr@aglcreatives.in"
+                        className="block text-base font-bold text-[#0A1930] hover:text-[#2F6FED] transition-colors"
+                      >
+                        hr@aglcreatives.in
+                      </a>
+                      <div className="text-xs text-[#161B22]/60 mt-0.5">
+                        Quotes returned within 24 business hours
+                      </div>
                     </div>
                   </div>
 
@@ -261,7 +314,9 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                       <MapPin className="w-5 h-5" />
                     </div>
                     <div>
-                      <div className="text-xs font-mono text-[#12295A]/60 uppercase">Printing and Packaging Solution Company</div>
+                      <div className="text-xs font-mono text-[#12295A]/60 uppercase">
+                        Printing and Packaging Solution Company
+                      </div>
                       <div className="text-sm sm:text-base font-bold text-[#0A1930]">
                         Faridabad, Haryana, India
                       </div>
@@ -277,7 +332,9 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                       <Clock className="w-5 h-5 text-[#2F6FED]" />
                     </div>
                     <div>
-                      <div className="text-xs font-mono text-[#12295A]/60 uppercase">Working Hours</div>
+                      <div className="text-xs font-mono text-[#12295A]/60 uppercase">
+                        Working Hours
+                      </div>
                       <div className="text-sm font-bold text-[#0A1930]">
                         Mon–Sat, 10:00 AM – 6:00 PM IST
                       </div>
@@ -295,10 +352,26 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                   </div>
                   <div className="flex items-center gap-3">
                     {[
-                      { icon: Instagram, label: 'Instagram', href: 'https://instagram.com' },
-                      { icon: Linkedin, label: 'LinkedIn', href: 'https://linkedin.com' },
-                      { icon: Facebook, label: 'Facebook', href: 'https://facebook.com' },
-                      { icon: Twitter, label: 'Twitter / X', href: 'https://twitter.com' },
+                      {
+                        icon: Instagram,
+                        label: "Instagram",
+                        href: "https://instagram.com",
+                      },
+                      {
+                        icon: Linkedin,
+                        label: "LinkedIn",
+                        href: "https://linkedin.com",
+                      },
+                      {
+                        icon: Facebook,
+                        label: "Facebook",
+                        href: "https://facebook.com",
+                      },
+                      {
+                        icon: Twitter,
+                        label: "Twitter / X",
+                        href: "https://twitter.com",
+                      },
                     ].map((social) => {
                       const Icon = social.icon;
                       return (
@@ -339,12 +412,13 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                     Tell Us About Your Packaging Needs
                   </h3>
                   <p className="text-xs text-[#161B22]/70 mt-1">
-                    Fill out the specifications below and our structural design team will respond within 24h.
+                    Fill out the specifications below and our structural design
+                    team will respond within 24h.
                   </p>
                 </div>
 
                 <AnimatePresence mode="wait">
-                  {status === 'success' ? (
+                  {status === "success" ? (
                     <motion.div
                       key="success"
                       initial={{ opacity: 0, scale: 0.95 }}
@@ -359,7 +433,9 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                         Inquiry Received!
                       </h4>
                       <p className="text-sm text-[#161B22]/75 max-w-md mt-2 leading-relaxed">
-                        Thank you for reaching out to AGL Creatives. One of our senior packaging engineers has been assigned to your brief and will review your specifications shortly.
+                        Thank you for reaching out to AGL Creatives. One of our
+                        senior packaging engineers has been assigned to your
+                        brief and will review your specifications shortly.
                       </p>
                       <button
                         type="button"
@@ -385,23 +461,23 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                             name="fullName"
                             value={formData.fullName}
                             onChange={handleInputChange}
-                            onFocus={() => setFocusedField('fullName')}
+                            onFocus={() => setFocusedField("fullName")}
                             onBlur={() => setFocusedField(null)}
                             placeholder=" "
                             className={`peer w-full pt-6 pb-2 text-sm text-[#0A1930] font-medium bg-transparent border-b-2 transition-colors duration-200 outline-none ${
                               errors.fullName
-                                ? 'border-red-500'
-                                : focusedField === 'fullName'
-                                ? 'border-[#FF9933]'
-                                : 'border-[#12295A]/20'
+                                ? "border-red-500"
+                                : focusedField === "fullName"
+                                  ? "border-[#FF9933]"
+                                  : "border-[#12295A]/20"
                             }`}
                           />
                           <label
                             htmlFor="contact-fullname"
                             className={`absolute left-0 transition-all duration-200 pointer-events-none text-xs ${
-                              formData.fullName || focusedField === 'fullName'
-                                ? 'top-1 text-[#FF9933] font-bold text-[11px]'
-                                : 'top-5 text-[#12295A]/50 text-sm'
+                              formData.fullName || focusedField === "fullName"
+                                ? "top-1 text-[#FF9933] font-bold text-[11px]"
+                                : "top-5 text-[#12295A]/50 text-sm"
                             }`}
                           >
                             Full Name *
@@ -421,23 +497,23 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                             name="email"
                             value={formData.email}
                             onChange={handleInputChange}
-                            onFocus={() => setFocusedField('email')}
+                            onFocus={() => setFocusedField("email")}
                             onBlur={() => setFocusedField(null)}
                             placeholder=" "
                             className={`peer w-full pt-6 pb-2 text-sm text-[#0A1930] font-medium bg-transparent border-b-2 transition-colors duration-200 outline-none ${
                               errors.email
-                                ? 'border-red-500'
-                                : focusedField === 'email'
-                                ? 'border-[#FF9933]'
-                                : 'border-[#12295A]/20'
+                                ? "border-red-500"
+                                : focusedField === "email"
+                                  ? "border-[#FF9933]"
+                                  : "border-[#12295A]/20"
                             }`}
                           />
                           <label
                             htmlFor="contact-email"
                             className={`absolute left-0 transition-all duration-200 pointer-events-none text-xs ${
-                              formData.email || focusedField === 'email'
-                                ? 'top-1 text-[#FF9933] font-bold text-[11px]'
-                                : 'top-5 text-[#12295A]/50 text-sm'
+                              formData.email || focusedField === "email"
+                                ? "top-1 text-[#FF9933] font-bold text-[11px]"
+                                : "top-5 text-[#12295A]/50 text-sm"
                             }`}
                           >
                             Work Email *
@@ -459,21 +535,21 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                             name="phone"
                             value={formData.phone}
                             onChange={handleInputChange}
-                            onFocus={() => setFocusedField('phone')}
+                            onFocus={() => setFocusedField("phone")}
                             onBlur={() => setFocusedField(null)}
                             placeholder=" "
                             className={`peer w-full pt-6 pb-2 text-sm text-[#0A1930] font-medium bg-transparent border-b-2 transition-colors duration-200 outline-none ${
-                              focusedField === 'phone'
-                                ? 'border-[#FF9933]'
-                                : 'border-[#12295A]/20'
+                              focusedField === "phone"
+                                ? "border-[#FF9933]"
+                                : "border-[#12295A]/20"
                             }`}
                           />
                           <label
                             htmlFor="contact-phone"
                             className={`absolute left-0 transition-all duration-200 pointer-events-none text-xs ${
-                              formData.phone || focusedField === 'phone'
-                                ? 'top-1 text-[#FF9933] font-bold text-[11px]'
-                                : 'top-5 text-[#12295A]/50 text-sm'
+                              formData.phone || focusedField === "phone"
+                                ? "top-1 text-[#FF9933] font-bold text-[11px]"
+                                : "top-5 text-[#12295A]/50 text-sm"
                             }`}
                           >
                             Phone Number (Optional)
@@ -487,14 +563,18 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                             name="projectType"
                             value={formData.projectType}
                             onChange={handleInputChange}
-                            onFocus={() => setFocusedField('projectType')}
+                            onFocus={() => setFocusedField("projectType")}
                             onBlur={() => setFocusedField(null)}
                             className="w-full pt-6 pb-2 text-sm text-[#0A1930] font-medium bg-transparent border-b-2 border-[#12295A]/20 focus:border-[#FF9933] outline-none appearance-none cursor-pointer"
                           >
                             <option value="Boxes">Rigid & Folding Boxes</option>
-                            <option value="E-commerce Mailers">E-Commerce Mailers</option>
+                            <option value="E-commerce Mailers">
+                              E-Commerce Mailers
+                            </option>
                             <option value="Labels">Labels & Stickers</option>
-                            <option value="Corporate Print">Corporate Print Suites</option>
+                            <option value="Corporate Print">
+                              Corporate Print Suites
+                            </option>
                             <option value="Other">Other Bespoke Format</option>
                           </select>
                           <label
@@ -509,8 +589,12 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
 
                       {/* Project details */}
                       <div className="pt-2">
-                        <label htmlFor="contact-message" className="mb-2 block text-xs font-bold text-[#FF9933]">
-                          Describe your packaging project (quantities, dimensions, finish preferences) *
+                        <label
+                          htmlFor="contact-message"
+                          className="mb-2 block text-xs font-bold text-[#FF9933]"
+                        >
+                          Describe your packaging project (quantities,
+                          dimensions, finish preferences) *
                         </label>
                         <textarea
                           id="contact-message"
@@ -518,15 +602,15 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                           rows={4}
                           value={formData.message}
                           onChange={handleInputChange}
-                          onFocus={() => setFocusedField('message')}
+                          onFocus={() => setFocusedField("message")}
                           onBlur={() => setFocusedField(null)}
                           placeholder="Share project details"
                           className={`w-full rounded-lg border-2 bg-[#FAF7F2] px-4 py-3 text-sm text-[#0A1930] font-medium transition-colors duration-200 outline-none resize-none ${
                             errors.message
-                              ? 'border-red-500'
-                              : focusedField === 'message'
-                              ? 'border-[#FF9933]'
-                                : 'border-[#12295A]/20'
+                              ? "border-red-500"
+                              : focusedField === "message"
+                                ? "border-[#FF9933]"
+                                : "border-[#12295A]/20"
                           }`}
                         />
                         {errors.message && (
@@ -541,10 +625,10 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                         <button
                           id="contact-form-submit-btn"
                           type="submit"
-                          disabled={status === 'loading'}
+                          disabled={status === "loading"}
                           className="w-full py-4 rounded-2xl bg-[#FF9933] text-[#0A1930] font-bold text-sm sm:text-base hover:bg-[#FFB35C] shadow-[0_8px_20px_rgba(255,153,51,0.35)] active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
                         >
-                          {status === 'loading' ? (
+                          {status === "loading" ? (
                             <>
                               <Loader2 className="w-5 h-5 animate-spin text-[#0A1930]" />
                               <span>Submitting packaging inquiry...</span>
@@ -558,15 +642,19 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                         </button>
                       </div>
 
-                      {status === 'error' && (
-                        <p role="alert" className="border-l-4 border-red-600 bg-red-50 px-4 py-3 text-sm text-red-800">
+                      {status === "error" && (
+                        <p
+                          role="alert"
+                          className="border-l-4 border-red-600 bg-red-50 px-4 py-3 text-sm text-red-800"
+                        >
                           {submissionError}
                         </p>
                       )}
 
                       <div className="text-center">
                         <span className="text-[11px] font-mono text-[#12295A]/60">
-                          🔒 Direct NDA protection • No obligation quote • 24h reply time
+                          🔒 Direct NDA protection • No obligation quote • 24h
+                          reply time
                         </span>
                       </div>
                     </motion.form>
@@ -574,7 +662,6 @@ export const CtaAndContact: React.FC<CtaAndContactProps> = ({ onOpenQuoteModal }
                 </AnimatePresence>
               </div>
             </div>
-
           </div>
         </div>
       </section>
